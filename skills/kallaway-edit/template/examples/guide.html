@@ -1,0 +1,88 @@
+<!-- Scene guide (hook, 0 - 3.6 s): "Anthropic just dropped a prompting guide for Opus 5.5,"
+     Title builds in the first 0.5 s, the guide page drops in on "dropped", two more pages fan
+     out on "prompting guide", the red "Opus 5.5" pill lands on "Opus", camera leans in on "5.5". -->
+<!--KW:SFX [{"t": "w:2-0.02", "s": "whoosh"}, {"t": "w:4", "s": "pop", "db": -4}, {"t": "w:5", "s": "pop", "db": -5}, {"t": "w:7-0.04", "s": "impact", "db": -4}, {"t": "w:8", "s": "whoosh", "db": -5}] -->
+<template>
+<style>
+/*KW:CSS*/
+#root { position: absolute; inset: 0; }
+#__ID__-glow { position: absolute; left: 540px; top: 700px; width: 900px; height: 900px; margin: -450px 0 0 -450px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(217,119,87,0.16) 0%, rgba(217,119,87,0.05) 40%, rgba(0,0,0,0) 70%); }
+.__ID__-page { width: 470px; height: 600px; left: 305px; top: 470px; padding: 44px 40px; box-sizing: border-box; }
+.__ID__-page.back { background: #DCDAD6; }
+#__ID__-p1 { transform-origin: 50% 100%; }
+.__ID__-mark { width: 54px; height: 54px; }
+.__ID__-h { font-family: "KW Grotesk"; font-weight: 800; font-size: 40px; letter-spacing: -0.04em; line-height: 0.98; color: #111; margin-top: 26px; }
+.__ID__-sub { font-family: "KW Grotesk"; font-weight: 600; font-size: 22px; color: #7A776F; margin-top: 12px; letter-spacing: -0.02em; }
+.__ID__-bar { height: 13px; border-radius: 7px; background: #CFCCC6; margin-top: 18px; }
+.__ID__-code { margin-top: 26px; background: #1B1B1B; border-radius: 10px; height: 92px; padding: 18px; box-sizing: border-box; }
+.__ID__-code div { height: 10px; border-radius: 5px; background: #4A4A4A; margin-bottom: 12px; }
+.__ID__-code div.o { background: #B5654A; }
+#__ID__-pill { left: 610px; top: 990px; }
+#__ID__-pulse { left: 735px; top: 1019px; }
+</style>
+<div id="root" data-composition-id="__ID__" data-width="1080" data-height="1920" data-layout-allow-overflow>
+  <div id="__ID__-glow" class="kw-hide"></div>
+  <div id="__ID__-title" class="kw-title two"><span class="kw-line">Anthropic Just Dropped A</span><span class="kw-line" style="color:#E01E1A">Prompting <span class="kw-serif" data-kw-whole>Guide</span></span></div>
+  <div id="__ID__-cam" class="kw-cam">
+
+    <div id="__ID__-p3" class="kw-paper __ID__-page back kw-hide"></div>
+    <div id="__ID__-p2" class="kw-paper __ID__-page back kw-hide"></div>
+    <div id="__ID__-p1" class="kw-paper __ID__-page kw-hide">
+      <svg class="__ID__-mark" viewBox="-50 -50 100 100">
+        <g fill="#D97757">
+          <rect x="-5" y="-46" width="10" height="38" rx="5"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(30)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(60)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(90)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(120)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(150)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(180)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(210)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(240)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(270)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(300)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(330)"/>
+        </g>
+      </svg>
+      <div class="__ID__-h">Prompting<br>best practices</div>
+      <div class="__ID__-sub">Claude Opus 5.5</div>
+      <div class="__ID__-bar" style="width:100%"></div>
+      <div class="__ID__-bar" style="width:92%"></div>
+      <div class="__ID__-bar" style="width:97%"></div>
+      <div class="__ID__-bar" style="width:64%"></div>
+      <div class="__ID__-code"><div style="width:70%"></div><div class="o" style="width:48%"></div><div style="width:84%"></div></div>
+      <div class="__ID__-bar" style="width:88%"></div>
+    </div>
+
+    <div id="__ID__-pulse" class="kw-pulse"></div>
+    <div id="__ID__-pill" class="kw-redpill kw-hide"><span class="kw-txt">Opus 5.5</span></div>
+  </div>
+</div>
+<script>
+(function () {
+/*KW:JS*/
+const B = /*KW:BEATS*/{}/*END*/;
+const $ = (s) => "#__ID__-" + s;
+const tl = gsap.timeline({ paused: true });
+
+// Frame 0 is live: the title builds word by word inside the first half second.
+KW.title(tl, $("title"), 0.03, { gap: 0.075 });
+
+// The guide drops in on "dropped".
+tl.fromTo($("p1"), { opacity: 0, y: -140, rotation: -4, filter: "blur(16px)" },
+  { opacity: 1, y: 0, rotation: 0, filter: "blur(0px)", duration: 0.42, ease: "expo.out", immediateRender: false }, B.dropped);
+KW.blurIn(tl, $("glow"), B.dropped, { dur: 0.6, blur: 40, scale: 0.7 });
+
+// Two more pages fan out behind it on "prompting guide".
+tl.fromTo($("p2"), { opacity: 0, x: 0, rotation: 0 }, { opacity: 1, x: -150, y: 26, rotation: -8, duration: 0.4,
+  ease: "expo.out", immediateRender: false }, B.prompting);
+tl.fromTo($("p3"), { opacity: 0, x: 0, rotation: 0 }, { opacity: 1, x: 150, y: 26, rotation: 8, duration: 0.4,
+  ease: "expo.out", immediateRender: false }, B.guide);
+
+// The camera settles back a touch while the pages land.
+tl.fromTo($("cam"), { scale: 1.06 }, { scale: 1, duration: 1.2, ease: "power2.out", immediateRender: false }, B.dropped);
+
+// "Opus 5.5" lands as a red pill with a pulse, then the camera leans in on it.
+KW.pulse(tl, $("pulse"), B.opus);
+KW.pill(tl, $("pill"), B.opus, { scramble: true });
+KW.cam(tl, $("cam"), B.five, { x: -40, y: -60, scale: 1.08 }, { dur: 0.8, blur: 4 });
+
+window.__timelines["__ID__"] = tl;
+})();
+</script>
+</template>

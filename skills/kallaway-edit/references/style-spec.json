@@ -1,0 +1,226 @@
+{
+ "refs": [
+  "Kallaway reference reel 1 (measured; the video is not included)",
+  "Kallaway reference reel 2 (measured; the video is not included)",
+  "Kallaway reference reel 3 (measured; the video is not included)"
+ ],
+ "measured": [
+  {
+   "file": "Kallaway reference reel 1 (measured; the video is not included)",
+   "duration": 73.93,
+   "cuts_per_min": 17.0,
+   "avg_shot_s": 3.36,
+   "changes_per_s": 0.54,
+   "stage_share": 0.56,
+   "full_share": 0.32,
+   "paper_share": 0.12,
+   "card_top_pct": 73.54,
+   "card_x0_pct": 6.3,
+   "stage_bg": "#020202",
+   "cap_y_stage_pct": 64.9,
+   "cap_y_full_pct": 60.21,
+   "cap_h_pct": 2.29,
+   "cap_changes_per_s": 2.48,
+   "red_share": 0.25,
+   "lufs": -14.3,
+   "true_peak": -0.0,
+   "stereo_sfx_per_min": 4.1,
+   "mono_mix": false
+  },
+  {
+   "file": "Kallaway reference reel 2 (measured; the video is not included)",
+   "duration": 107.52,
+   "cuts_per_min": 12.8,
+   "avg_shot_s": 4.48,
+   "changes_per_s": 0.6,
+   "stage_share": 0.77,
+   "full_share": 0.23,
+   "paper_share": 0.0,
+   "card_top_pct": 73.54,
+   "card_x0_pct": 6.3,
+   "stage_bg": "#020202",
+   "cap_y_stage_pct": 64.79,
+   "cap_y_full_pct": 60.42,
+   "cap_h_pct": 2.08,
+   "cap_changes_per_s": 2.32,
+   "red_share": 0.45,
+   "lufs": -14.4,
+   "true_peak": 0.7,
+   "stereo_sfx_per_min": 38.0,
+   "mono_mix": false
+  },
+  {
+   "file": "Kallaway reference reel 3 (measured; the video is not included)",
+   "duration": 88.84,
+   "cuts_per_min": 13.5,
+   "avg_shot_s": 4.23,
+   "changes_per_s": 0.62,
+   "stage_share": 0.76,
+   "full_share": 0.24,
+   "paper_share": 0.0,
+   "card_top_pct": 73.75,
+   "card_x0_pct": 6.67,
+   "stage_bg": "#000000",
+   "cap_y_stage_pct": 65.42,
+   "cap_y_full_pct": 65.31,
+   "cap_h_pct": 2.08,
+   "cap_changes_per_s": 2.52,
+   "red_share": 0.36,
+   "lufs": -14.4,
+   "true_peak": -0.4,
+   "stereo_sfx_per_min": 25.0,
+   "mono_mix": false
+  }
+ ],
+ "ranges": {
+  "cuts_per_min": {
+   "lo": 9.08,
+   "hi": 20.73,
+   "refs": [
+    17.0,
+    12.8,
+    13.5
+   ]
+  },
+  "avg_shot_s": {
+   "lo": 2.38,
+   "hi": 5.46,
+   "refs": [
+    3.36,
+    4.48,
+    4.23
+   ]
+  },
+  "changes_per_s": {
+   "lo": 0.37,
+   "hi": 0.79,
+   "refs": [
+    0.54,
+    0.6,
+    0.62
+   ]
+  },
+  "stage_share": {
+   "lo": 0.48,
+   "hi": 0.85,
+   "refs": [
+    0.56,
+    0.77,
+    0.76
+   ]
+  },
+  "full_share": {
+   "lo": 0.15,
+   "hi": 0.4,
+   "refs": [
+    0.32,
+    0.23,
+    0.24
+   ]
+  },
+  "paper_share": {
+   "lo": -0.06,
+   "hi": 0.18,
+   "refs": [
+    0.12,
+    0.0,
+    0.0
+   ]
+  },
+  "card_top_pct": {
+   "lo": 72.54,
+   "hi": 74.75,
+   "refs": [
+    73.54,
+    73.54,
+    73.75
+   ]
+  },
+  "card_x0_pct": {
+   "lo": 5.5,
+   "hi": 7.47,
+   "refs": [
+    6.3,
+    6.3,
+    6.67
+   ]
+  },
+  "cap_y_stage_pct": {
+   "lo": 63.59,
+   "hi": 66.62,
+   "refs": [
+    64.9,
+    64.79,
+    65.42
+   ]
+  },
+  "cap_y_full_pct": {
+   "lo": 58.21,
+   "hi": 67.31,
+   "refs": [
+    60.21,
+    60.42,
+    65.31
+   ]
+  },
+  "cap_h_pct": {
+   "lo": 1.83,
+   "hi": 2.54,
+   "refs": [
+    2.29,
+    2.08,
+    2.08
+   ]
+  },
+  "cap_changes_per_s": {
+   "lo": 1.96,
+   "hi": 2.88,
+   "refs": [
+    2.48,
+    2.32,
+    2.52
+   ]
+  },
+  "red_share": {
+   "lo": 0.15,
+   "hi": 0.55,
+   "refs": [
+    0.25,
+    0.45,
+    0.36
+   ]
+  },
+  "lufs": {
+   "lo": -15.4,
+   "hi": -13.3,
+   "refs": [
+    -14.3,
+    -14.4,
+    -14.4
+   ]
+  },
+  "true_peak": {
+   "lo": -1.4,
+   "hi": 1.7,
+   "refs": [
+    -0.0,
+    0.7,
+    -0.4
+   ]
+  },
+  "stereo_sfx_per_min": {
+   "lo": -2.22,
+   "hi": 44.31,
+   "refs": [
+    4.1,
+    38.0,
+    25.0
+   ]
+  }
+ },
+ "stage_bg_refs": [
+  "#020202",
+  "#020202",
+  "#000000"
+ ]
+}

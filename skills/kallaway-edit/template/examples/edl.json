@@ -1,0 +1,64 @@
+{
+ "clips": {
+  "A": "/ABSOLUTE/PATH/raw/hook.MOV",
+  "B": "/ABSOLUTE/PATH/raw/tips.MOV"
+ },
+ "segments": [
+  {
+   "clip": "A",
+   "chunk": "c009",
+   "say": "Anthropic just dropped a prompting guide for Opus 5.5,"
+  },
+  {
+   "clip": "A",
+   "chunk": "c012",
+   "say": "which is the newest and most powerful model."
+  },
+  {
+   "clip": "A",
+   "chunk": "c024",
+   "say": "Three things in it are going to flip how you use it, especially the last one."
+  },
+  {
+   "clip": "B",
+   "chunk": "c005",
+   "say": "Number one, stop telling it to think carefully."
+  },
+  {
+   "clip": "B",
+   "chunk": "c008",
+   "say": "Opus 5.5 already decides how much to think on its own."
+  },
+  {
+   "clip": "B",
+   "chunk": "c010",
+   "say": "Number two, start on medium effort."
+  },
+  {
+   "clip": "B",
+   "chunk": "c014",
+   "say": "Effort is basically the setting that controls how hard Claude thinks before it answers,"
+  },
+  {
+   "clip": "B",
+   "start": 91.7,
+   "end": 95.96,
+   "say": "and medium on Opus 5.5 is the sweet spot with performance and speed."
+  },
+  {
+   "clip": "B",
+   "chunk": "c025",
+   "say": "Number three, tell it what done looks like."
+  },
+  {
+   "clip": "B",
+   "chunk": "c030",
+   "say": "Give it everything you want to accomplish and what the final outcome slash goal looks like."
+  },
+  {
+   "clip": "B",
+   "chunk": "c032",
+   "say": "This will help get a polished result much faster."
+  }
+ ]
+}

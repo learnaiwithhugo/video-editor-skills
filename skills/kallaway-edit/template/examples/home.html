@@ -1,0 +1,94 @@
+<!-- Scene home (mounted as home1 / home2 / home3, B.step = 1, 2, 3): "Number one / two / three,"
+     Kallaway revisit: the home graphic from "three" comes back finished (title + three cards in
+     place). Exactly one new thing lands: card N lights red with a pulse while the camera snaps
+     toward it, the other cards dim, and a glass label naming the tip lands under it on the number.
+     Earlier tips stay marked done (dimmed, red tick). -->
+<!--KW:SFX [{"t": "B.w1-0.02", "s": "pop"}] -->
+<template>
+<style>
+/*KW:CSS*/
+#root { position: absolute; inset: 0; }
+#__ID__-t1 { top: 196px; }
+#__ID__-t2 { top: 278px; }
+.__ID__-card { position: absolute; top: 560px; width: 290px; height: 420px; }
+.__ID__-face { position: absolute; inset: 0; border-radius: 28px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #202020 0%, #121212 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.10), inset 0 1.5px 0 rgba(255,255,255,0.08), 0 24px 60px rgba(0,0,0,0.6); }
+.__ID__-face.red { background: linear-gradient(180deg, #D3302C 0%, #A61413 55%, #8E0F0E 100%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.32), inset 0 0 0 2px rgba(255,90,80,0.6), 0 0 70px rgba(196,21,20,0.55), 0 24px 60px rgba(0,0,0,0.6); }
+.__ID__-num { font-family: "KW Grotesk"; font-weight: 900; font-size: 270px; letter-spacing: -0.06em; line-height: 1;
+  color: #FCFAFB; margin-top: -10px; margin-left: -12px; }
+.__ID__-tick { position: absolute; right: -14px; top: -14px; width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(180deg, #D3302C 0%, #A61413 100%);
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.35), 0 6px 18px rgba(0,0,0,0.5); display: none; }
+.__ID__-tick svg { position: absolute; left: 14px; top: 15px; width: 32px; height: 30px; }
+.__ID__-lab { position: absolute; top: 1014px; width: 600px; height: 78px; display: flex; justify-content: center; }
+.__ID__-lab .kw-glass { position: relative; font-size: 40px; padding: 14px 26px 15px; border-radius: 11px; }
+#__ID__-c1 { left: 70px; } #__ID__-c2 { left: 395px; } #__ID__-c3 { left: 720px; }
+</style>
+<div id="root" data-composition-id="__ID__" data-width="1080" data-height="1920" data-layout-allow-overflow>
+  <div id="__ID__-t1" class="kw-title two">3 Things That <span class="kw-serif">Flip</span></div>
+  <div id="__ID__-t2" class="kw-title two"><span class="kw-redbox">How You Use It</span></div>
+  <div id="__ID__-cam" class="kw-cam">
+    <div id="__ID__-pulse" class="kw-pulse" style="width:640px;height:640px;margin:-320px 0 0 -320px;top:770px"></div>
+    <div id="__ID__-c1" class="__ID__-card">
+      <div class="__ID__-face" id="__ID__-d1"><span class="__ID__-num">1</span></div>
+      <div class="__ID__-face red kw-hide" id="__ID__-r1"><span class="__ID__-num">1</span></div>
+      <div class="__ID__-tick" id="__ID__-k1"><svg viewBox="0 0 32 30"><path d="M4 16 L12.5 24 L28 6" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div id="__ID__-c2" class="__ID__-card">
+      <div class="__ID__-face" id="__ID__-d2"><span class="__ID__-num">2</span></div>
+      <div class="__ID__-face red kw-hide" id="__ID__-r2"><span class="__ID__-num">2</span></div>
+      <div class="__ID__-tick" id="__ID__-k2"><svg viewBox="0 0 32 30"><path d="M4 16 L12.5 24 L28 6" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div id="__ID__-c3" class="__ID__-card">
+      <div class="__ID__-face" id="__ID__-d3"><span class="__ID__-num">3</span></div>
+      <div class="__ID__-face red kw-hide" id="__ID__-r3"><span class="__ID__-num">3</span></div>
+      <div class="__ID__-tick" id="__ID__-k3"><svg viewBox="0 0 32 30"><path d="M4 16 L12.5 24 L28 6" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div id="__ID__-lab" class="__ID__-lab kw-hide"><div id="__ID__-labtxt" class="kw-glass">Tip</div></div>
+  </div>
+</div>
+<script>
+(function () {
+/*KW:JS*/
+const B = /*KW:BEATS*/{}/*END*/;
+const $ = (s) => "#__ID__-" + s;
+const tl = gsap.timeline({ paused: true });
+
+const N = Math.min(3, Math.max(1, Number(B.step) || 1));
+const CX = [215, 540, 865];                       // card centres (cam space)
+const NAMES = ["Stop Saying Think", "Medium Effort", "Define Done"];
+// Each instance only holds its own words ("Number", "one"): never hard-code indices here.
+const tNum = B.w.length ? Math.max(0, B.w[0].t) : 0.1;
+const tN = B.w.length > 1 ? Math.max(0.12, B.w[1].t) : tNum + 0.1;
+
+// Static set-up for this step (frame 0 already shows it): earlier tips are done.
+for (let k = 1; k < N; k++) {
+  KW.q($("d" + k)).style.opacity = "0.38";
+  KW.q($("k" + k)).style.display = "block";
+}
+KW.q($("labtxt")).textContent = NAMES[N - 1];
+const lab = KW.q($("lab")); lab.style.left = (CX[N - 1] - 300) + "px";
+KW.q($("pulse")).style.left = CX[N - 1] + "px";
+
+// The one new thing: card N lights red with a pulse while the camera snaps toward it.
+const t0 = 0.03;
+tl.fromTo($("r" + N), { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power2.out", immediateRender: false }, t0);
+KW.pulse(tl, $("pulse"), t0, { scale: 1.5 });
+tl.fromTo($("c" + N), { scale: 1 }, { keyframes: [{ scale: 1.06, duration: 0.1, ease: "power2.out" },
+  { scale: 1, duration: 0.3, ease: "power2.out" }], immediateRender: false }, t0);
+// the other not-yet-done cards dim
+for (let k = N + 1; k <= 3; k++) {
+  tl.fromTo($("d" + k), { opacity: 1 }, { opacity: 0.38, duration: 0.18, ease: "power2.out", immediateRender: false }, t0);
+}
+const camX = [230, 0, -230][N - 1];
+KW.cam(tl, $("cam"), 0.0, { x: camX, y: -24, scale: 1.12 }, { dur: 0.5, blur: 5 });
+
+// The tip's name lands under the card on the number word.
+KW.blurIn(tl, $("lab"), Math.max(t0 + 0.08, tN - 0.05), { dur: 0.2, y: 10 });
+
+window.__timelines["__ID__"] = tl;
+})();
+</script>
+</template>

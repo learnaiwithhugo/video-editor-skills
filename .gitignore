@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# State the editor writes at runtime (it lives in the plugin data folder, never in the repo)
+config.json
+data-dir.txt
+.sfx/
+sfx/
+.fonts/
+fonts/*.ttf
+
+# Edit work and media
+work/
+*.mp4
+*.mov
+*.MOV
+*.webm
+
+# macOS
+.DS_Store

@@ -1,0 +1,2 @@
+GSAP 3.13.0 (gsap.min.js), (c) GreenSock. Free to use and redistribute under the GSAP
+Standard "No Charge" license: https://gsap.com/standard-license

@@ -1,0 +1,169 @@
+{
+ "note": "Opus 5.5 prompting tips. Times: seconds, line:N (EDL line start), w:N (word onset).",
+ "shots": [
+  {
+   "at": 0,
+   "layout": "stage",
+   "why": "hook: the guide"
+  },
+  {
+   "at": "line:1",
+   "layout": "full",
+   "why": "which is their newest... (connective)",
+   "push": 1.05
+  },
+  {
+   "at": "line:2",
+   "layout": "stage",
+   "why": "three things"
+  },
+  {
+   "at": "line:3",
+   "layout": "stage",
+   "why": "home graphic, number one"
+  },
+  {
+   "at": "w:35",
+   "layout": "stage",
+   "why": "tip 1: stop telling it to think carefully"
+  },
+  {
+   "at": "line:5",
+   "layout": "stage",
+   "why": "home graphic, number two"
+  },
+  {
+   "at": "w:54",
+   "layout": "stage",
+   "why": "tip 2: start on medium effort"
+  },
+  {
+   "at": "line:6",
+   "layout": "full",
+   "why": "Effort is basically (breather)"
+  },
+  {
+   "at": "w:61",
+   "layout": "stage",
+   "why": "the setting that controls... sweet spot"
+  },
+  {
+   "at": "line:8",
+   "layout": "stage",
+   "why": "home graphic, number three"
+  },
+  {
+   "at": "w:86",
+   "layout": "stage",
+   "why": "tip 3: tell it what done looks like"
+  },
+  {
+   "at": "line:10",
+   "layout": "full",
+   "why": "payoff line on the face"
+  }
+ ],
+ "scenes": [
+  {
+   "id": "guide",
+   "from": 0,
+   "to": "line:1",
+   "beats": {
+    "dropped": "w:2",
+    "prompting": "w:4",
+    "guide": "w:5",
+    "opus": "w:7",
+    "five": "w:8"
+   }
+  },
+  {
+   "id": "three",
+   "from": "line:2",
+   "to": "line:3"
+  },
+  {
+   "id": "home1",
+   "src": "home",
+   "from": "line:3",
+   "to": "w:35",
+   "vars": {
+    "step": 1
+   }
+  },
+  {
+   "id": "tip1",
+   "from": "w:35",
+   "to": "line:5"
+  },
+  {
+   "id": "home2",
+   "src": "home",
+   "from": "line:5",
+   "to": "w:54",
+   "vars": {
+    "step": 2
+   }
+  },
+  {
+   "id": "effort",
+   "from": "w:54",
+   "to": "line:8"
+  },
+  {
+   "id": "home3",
+   "src": "home",
+   "from": "line:8",
+   "to": "w:86",
+   "vars": {
+    "step": 3
+   }
+  },
+  {
+   "id": "tip3",
+   "from": "w:86",
+   "to": "line:10"
+  }
+ ],
+ "punch": [
+  {
+   "at": "w:115",
+   "scale": 1.19,
+   "riser": true
+  }
+ ],
+ "captions": {
+  "fix": {
+   "67": "Claude",
+   "17": "3",
+   "34": "1,",
+   "53": "2,",
+   "85": "3,"
+  },
+  "emphasis": [
+   24,
+   40,
+   56,
+   89,
+   113
+  ],
+  "keep_together": [
+   [
+    33,
+    34
+   ],
+   [
+    52,
+    53
+   ],
+   [
+    84,
+    85
+   ]
+  ]
+ },
+ "music": {
+  "on": true,
+  "file": "music/track.mp3",
+  "start": 0
+ }
+}

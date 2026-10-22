@@ -1,0 +1,86 @@
+<!-- Scene three (5.80 - 9.23 s): "3 things in it are going to flip how you use it, especially the last one."
+     Home graphic is born here: three numbered cards blur in on "Three things", spin a full 3D turn
+     on "flip", the red claim box builds word by word on "how you use it", the camera pushes toward
+     card 3 on "especially", and card 3 turns red with a pulse on "last". -->
+<!--KW:SFX [{"t": "w:17-0.02", "s": "impact"}, {"t": "w:24-0.04", "s": "whoosh"}, {"t": "w:25-0.05", "s": "impact", "db": -4}, {"t": "w:29-0.03", "s": "whoosh"}, {"t": "w:31-0.03", "s": "pop"}] -->
+<template>
+<style>
+/*KW:CSS*/
+#root { position: absolute; inset: 0; }
+#__ID__-t1 { top: 196px; }
+#__ID__-t2 { top: 278px; }
+.__ID__-card { position: absolute; top: 560px; width: 290px; height: 420px; }
+.__ID__-flip { position: absolute; inset: 0; transform-style: preserve-3d; }
+.__ID__-face { position: absolute; inset: 0; border-radius: 28px; display: flex; align-items: center; justify-content: center;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  background: linear-gradient(180deg, #202020 0%, #121212 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.10), inset 0 1.5px 0 rgba(255,255,255,0.08), 0 24px 60px rgba(0,0,0,0.6); }
+.__ID__-face.back { transform: rotateY(180deg); }
+.__ID__-face.red { background: linear-gradient(180deg, #D3302C 0%, #A61413 55%, #8E0F0E 100%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.32), inset 0 0 0 2px rgba(255,90,80,0.6), 0 0 70px rgba(196,21,20,0.55), 0 24px 60px rgba(0,0,0,0.6); }
+.__ID__-num { font-family: "KW Grotesk"; font-weight: 900; font-size: 270px; letter-spacing: -0.06em; line-height: 1;
+  color: #FCFAFB; margin-top: -10px; margin-left: -12px; }
+#__ID__-c1 { left: 70px; } #__ID__-c2 { left: 395px; } #__ID__-c3 { left: 720px; }
+#__ID__-pulse { left: 865px; top: 770px; width: 640px; height: 640px; margin: -320px 0 0 -320px; }
+</style>
+<div id="root" data-composition-id="__ID__" data-width="1080" data-height="1920" data-layout-allow-overflow>
+  <div id="__ID__-t1" class="kw-title two">3 Things That <span class="kw-serif" data-kw-whole>Flip</span></div>
+  <div id="__ID__-t2" class="kw-title two"><span id="__ID__-rb" class="kw-redbox kw-hide">How You Use It</span></div>
+  <div id="__ID__-cam" class="kw-cam">
+    <div id="__ID__-pulse" class="kw-pulse"></div>
+    <div id="__ID__-c1" class="__ID__-card kw-hide"><div id="__ID__-f1" class="__ID__-flip">
+      <div class="__ID__-face"><span class="__ID__-num">1</span></div>
+      <div class="__ID__-face back"><span class="__ID__-num">1</span></div>
+    </div></div>
+    <div id="__ID__-c2" class="__ID__-card kw-hide"><div id="__ID__-f2" class="__ID__-flip">
+      <div class="__ID__-face"><span class="__ID__-num">2</span></div>
+      <div class="__ID__-face back"><span class="__ID__-num">2</span></div>
+    </div></div>
+    <div id="__ID__-c3" class="__ID__-card kw-hide"><div id="__ID__-f3" class="__ID__-flip">
+      <div class="__ID__-face"><span class="__ID__-num">3</span></div>
+      <div class="__ID__-face back"><span class="__ID__-num">3</span></div>
+      <div id="__ID__-r3" class="__ID__-face red kw-hide"><span class="__ID__-num">3</span></div>
+    </div></div>
+  </div>
+</div>
+<script>
+(function () {
+/*KW:JS*/
+const B = /*KW:BEATS*/{}/*END*/;
+const $ = (s) => "#__ID__-" + s;
+const at = (i) => KW.word(B, i);
+const tl = gsap.timeline({ paused: true });
+
+// Title line 1 builds with the words: "3" on Three, "Things" on things, "Flip" on flip.
+KW.title(tl, $("t1"), [at(17), at(18), at(18) + 0.36, at(24)]);
+
+// The three cards blur in, staggered on "Three things".
+KW.blurIn(tl, [$("c1"), $("c2"), $("c3")], at(17) - 0.02, { dur: 0.3, stagger: 0.09, y: 26, scale: 0.9 });
+// clear the filter so the 3D flip below renders in real 3D
+KW.at(tl, [$("c1"), $("c2"), $("c3")].map(KW.q), at(17) + 0.6, { filter: "none" });
+
+// "flip": every card spins one full turn and lands.
+[$("f1"), $("f2"), $("f3")].forEach((f, i) => {
+  tl.fromTo(f, { rotationY: 0, transformPerspective: 1300 },
+    { rotationY: 360, transformPerspective: 1300, duration: 0.62, ease: "power3.out", immediateRender: false },
+    at(24) - 0.04 + i * 0.06);
+});
+
+// The claim lands on a red box that grows left to right, words blur in as he says them.
+tl.fromTo($("rb"), { opacity: 0, scaleX: 0.04 }, { opacity: 1, scaleX: 1, duration: 0.26, ease: "expo.out",
+  transformOrigin: "0% 50%", immediateRender: false }, at(25) - 0.05);
+KW.title(tl, $("t2"), [at(25), at(26), at(27), at(28)]);
+
+// "especially the last one": camera pushes toward card 3.
+KW.cam(tl, $("cam"), at(29) - 0.03, { x: -420, y: -40, scale: 1.28 }, { dur: 0.85, blur: 6 });
+
+// "last": card 3 turns red with a pulse and a small kick.
+tl.fromTo($("r3"), { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power2.out", immediateRender: false }, at(31) - 0.03);
+KW.pulse(tl, $("pulse"), at(31) - 0.03, { scale: 1.5 });
+tl.fromTo($("c3"), { scale: 1 }, { keyframes: [{ scale: 1.06, duration: 0.1, ease: "power2.out" },
+  { scale: 1, duration: 0.35, ease: "power2.out" }], immediateRender: false }, at(31) - 0.03);
+
+window.__timelines["__ID__"] = tl;
+})();
+</script>
+</template>

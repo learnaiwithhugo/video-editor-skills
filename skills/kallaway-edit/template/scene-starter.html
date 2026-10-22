@@ -1,0 +1,42 @@
+<!-- Scene __ID__: one graphic for one spoken idea. Copy this file to <work>/scenes/<name>.html.
+     build.py replaces __ID__ with the scene id, pastes the style kit (/*KW:CSS*/) and motion kit
+     (/*KW:JS*/), and fills B (/*KW:BEATS*/) with this scene's word times in SCENE seconds:
+       B.dur          how long the scene is on screen
+       B.<name>       every beat named in plan.json ("beats": {"opus": "w:7"})
+       B.w[k]         every spoken word in the scene: {i, w, t (onset), e (end)}
+     Rules (references/style-rules.md): graphics live in y 160-1200, nothing below 1200
+     (the caption and the face card are there), red #C41514 is the only accent, something
+     new about every second, blur-in entrances, NOTHING animates out.
+     Sound: EVERY animation gets its sound (references/sound-map.md). List cues in the comment below:
+       {"t": "w:24-0.04", "s": "whoosh"}   t = a spoken word (follows recuts), "B.w1" (this scene's
+       2nd word), "B.<beat>" or scene seconds; "db": -3 trims one cue; "dur": "w:40" for typing.
+       whoosh (camera move) . whoosh-big (title swap) . pop (pill/label/numeral lands) . click (slider
+       snap, tick, strike, counter) . key (one typed char) . typing (typed text) . impact (the big moment,
+       1-2 per reel) . sparkle / chime (a payoff, sparingly). Land it on the frame the visual lands. -->
+<!--KW:SFX [] -->
+<template>
+<style>
+/*KW:CSS*/
+#root { position: absolute; inset: 0; }
+</style>
+<div id="root" data-composition-id="__ID__" data-width="1080" data-height="1920" data-layout-allow-overflow>
+  <!-- Titles sit OUTSIDE the camera: once landed, a title is dead still. -->
+  <div id="__ID__-title" class="kw-title">Your <span class="kw-serif">Title</span></div>
+  <div id="__ID__-cam" class="kw-cam">
+    <!-- the diagram: everything the camera pans and zooms across -->
+  </div>
+</div>
+<script>
+(function () {
+/*KW:JS*/
+const B = /*KW:BEATS*/{}/*END*/;
+const $ = (s) => "#__ID__-" + s;
+const at = (i) => KW.word(B, i);   // onset of spoken word i, e.g. at(24) = "flip"
+const tl = gsap.timeline({ paused: true });
+
+KW.title(tl, $("title"), 0.03);
+
+window.__timelines["__ID__"] = tl;
+})();
+</script>
+</template>

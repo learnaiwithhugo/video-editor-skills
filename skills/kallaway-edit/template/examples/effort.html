@@ -1,0 +1,292 @@
+<!-- Scene effort (tip 2): "start on medium effort. [face: Effort is basically] the setting that controls how hard
+     Claude thinks before it answers. And medium on Opus 5.5 is a sweet spot with performance and speed."
+     Part 1: title builds, an effort slider draws in, the knob snaps to Medium (red fill + pulse).
+     Part 2 (after the 1 s face cut): title scrambles to "How Hard Claude Thinks", an "Effort" pill attaches,
+       camera pulls back to a Claude thinking panel, the knob sweeps Low -> High while the thinking grows,
+       a timer ticks, then the answer lands.
+     Part 3: camera whooshes right to a glowing diagram: Performance (white, rising) vs Speed (magenta,
+       falling) crossing at Medium, "Opus 5.5" pill, title -> "Medium = The Sweet Spot", red dot + labels. -->
+<!--KW:SFX [{"t": "w:55-0.08", "s": "pop", "db": -4}, {"t": "w:56-0.02", "s": "click"}, {"t": "w:62-0.06", "s": "pop"}, {"t": "w:64-0.04", "s": "whoosh"}, {"t": "w:66+0.02", "s": "click"}, {"t": "w:70-0.05", "s": "pop"}, {"t": "w:72-0.02", "s": "click"}, {"t": "w:74-0.05", "s": "whoosh"}, {"t": "w:74+0.1", "s": "pop", "db": -3}, {"t": "w:76-0.04", "s": "whoosh", "db": -4}, {"t": "w:78-0.02", "s": "pop", "db": -4}, {"t": "w:79-0.06", "s": "sparkle"}, {"t": "w:81-0.06", "s": "pop", "db": -2}, {"t": "w:83-0.06", "s": "pop", "db": -2}] -->
+<template>
+<style>
+/*KW:CSS*/
+#root { position: absolute; inset: 0; }
+
+/* ---------- slider ---------- */
+#__ID__-track { position: absolute; left: 240px; top: 492px; width: 600px; height: 16px; border-radius: 8px;
+  background: #242424; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.09); }
+#__ID__-fill { position: absolute; left: 240px; top: 492px; width: 600px; height: 16px; border-radius: 8px;
+  background: linear-gradient(180deg, #E0302C 0%, #C41514 60%, #9E100F 100%);
+  box-shadow: 0 0 16px rgba(220,30,28,0.65), 0 0 36px rgba(220,30,28,0.3); transform-origin: 0% 50%; }
+.__ID__-tick { position: absolute; top: 495px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%;
+  background: rgba(255,255,255,0.38); }
+#__ID__-knob { position: absolute; left: 209px; top: 469px; width: 62px; height: 62px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #FFFFFF 0%, #ECEAEB 70%, #D8D6D7 100%);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.6), inset 0 -2px 0 rgba(0,0,0,0.12); }
+#__ID__-knob::after { content: ""; position: absolute; left: 22px; top: 22px; width: 18px; height: 18px; border-radius: 50%;
+  background: #C41514; box-shadow: 0 0 8px rgba(220,30,28,0.7); }
+.__ID__-lab { position: absolute; top: 560px; width: 186px; margin-left: -93px; box-sizing: border-box; }
+.__ID__-on { position: absolute; top: 560px; width: 186px; margin-left: -93px; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; color: #fff; font-family: "KW Grotesk";
+  font-weight: 800; font-size: 32px; letter-spacing: -0.03em; padding: 12px 22px 13px; border-radius: 9px;
+  background: linear-gradient(180deg, #D3302C 0%, #A61413 60%, #8E0F0E 100%);
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.32), inset 0 0 0 1.5px rgba(255,90,80,0.5), 0 8px 26px rgba(196,21,20,0.4); }
+#__ID__-eff { left: 455px; top: 392px; width: 170px; box-sizing: border-box; }
+#__ID__-kpulse { left: 540px; top: 500px; }
+
+/* ---------- Claude thinking panel ---------- */
+#__ID__-pwrap { position: absolute; left: 0; top: 0; width: 1080px; height: 1200px; }
+#__ID__-panel { left: 150px; top: 690px; width: 780px; height: 452px; }
+#__ID__-mark { position: absolute; left: 186px; top: 716px; width: 44px; height: 44px; }
+#__ID__-think { position: absolute; left: 248px; top: 718px; font-family: "KW Grotesk"; font-weight: 700; font-size: 34px;
+  letter-spacing: -0.03em; color: #D6D4D5; line-height: 40px; }
+#__ID__-secs { position: absolute; left: 790px; top: 719px; width: 100px; text-align: right; font-family: "KW Grotesk";
+  font-weight: 600; font-size: 32px; letter-spacing: -0.02em; color: #8E8C8D; line-height: 40px; font-variant-numeric: tabular-nums; }
+#__ID__-rail { position: absolute; left: 206px; top: 792px; width: 2px; height: 202px; background: #3A3A3A; border-radius: 1px; }
+.__ID__-bar { position: absolute; left: 234px; height: 16px; border-radius: 8px; background: #444243; }
+#__ID__-div { position: absolute; left: 186px; top: 1022px; width: 708px; height: 1.5px; background: rgba(255,255,255,0.12); }
+#__ID__-ans { position: absolute; left: 186px; top: 1044px; font-family: "KW Grotesk"; font-weight: 800; font-size: 38px;
+  letter-spacing: -0.035em; color: #FCFAFB; line-height: 40px; }
+.__ID__-abar { position: absolute; left: 186px; height: 16px; border-radius: 8px; background: #7A7879; }
+
+/* ---------- diagram (part 3), one screen to the right ---------- */
+#__ID__-diag { position: absolute; left: 1080px; top: 0; width: 1080px; height: 1200px; }
+#__ID__-dsvg { position: absolute; left: 0; top: 0; width: 1080px; height: 1200px; overflow: visible; }
+.__ID__-xl { position: absolute; top: 1072px; width: 186px; margin-left: -93px; box-sizing: border-box; }
+.__ID__-xon { top: 1072px; }
+#__ID__-opus { left: 409px; top: 318px; width: 262px; box-sizing: border-box; }
+#__ID__-opulse { left: 540px; top: 347px; }
+#__ID__-guide { position: absolute; left: 549px; width: 0; border-left: 3px dashed rgba(252,250,251,0.42); transform-origin: 50% 0%; }
+#__ID__-dot { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: #C41514;
+  box-shadow: 0 0 0 4px #FCFAFB, 0 0 22px 6px rgba(230,30,30,0.75); }
+#__ID__-spulse { }
+#__ID__-sweet { width: 220px; margin-left: -110px; box-sizing: border-box; }
+.__ID__-key { display: inline-block; width: 16px; height: 16px; border-radius: 50%; margin-right: 12px; }
+#__ID__-perf { left: 668px; top: 438px; }
+#__ID__-speed { left: 228px; top: 438px; }
+
+/* ---------- titles ---------- */
+#__ID__-t2, #__ID__-t3 { }
+</style>
+<div id="root" data-composition-id="__ID__" data-width="1080" data-height="1920" data-layout-allow-overflow>
+  <div id="__ID__-t1" class="kw-title">Start On <span class="kw-serif" data-kw-whole>Medium</span> Effort</div>
+  <div id="__ID__-t2" class="kw-title kw-hide"><span id="__ID__-t2a">How Hard Claude</span> <span id="__ID__-t2b" class="kw-serif">Thinks</span></div>
+  <div id="__ID__-t3" class="kw-title kw-hide"><span id="__ID__-t3a">Medium = The</span> <span id="__ID__-t3b" class="kw-serif">Sweet Spot</span></div>
+
+  <div id="__ID__-cam" class="kw-cam">
+    <!-- ===== effort slider ===== -->
+    <div id="__ID__-eff" class="kw-pill kw-hide">Effort</div>
+    <div id="__ID__-track" class="kw-hide"></div>
+    <div id="__ID__-fill" class="kw-hide"></div>
+    <div class="__ID__-tick kw-hide" id="__ID__-tk0" style="left:240px"></div>
+    <div class="__ID__-tick kw-hide" id="__ID__-tk1" style="left:540px"></div>
+    <div class="__ID__-tick kw-hide" id="__ID__-tk2" style="left:840px"></div>
+    <div id="__ID__-kpulse" class="kw-pulse"></div>
+    <div id="__ID__-knob" class="kw-hide"></div>
+    <div id="__ID__-l0" class="kw-glass __ID__-lab kw-hide" style="left:240px">Low</div>
+    <div id="__ID__-l1" class="kw-glass __ID__-lab kw-hide" style="left:540px">Medium</div>
+    <div id="__ID__-l2" class="kw-glass __ID__-lab kw-hide" style="left:840px">High</div>
+    <div id="__ID__-o0" class="__ID__-on kw-hide" style="left:240px">Low</div>
+    <div id="__ID__-o1" class="__ID__-on kw-hide" style="left:540px">Medium</div>
+    <div id="__ID__-o2" class="__ID__-on kw-hide" style="left:840px">High</div>
+
+    <!-- ===== Claude thinking panel ===== -->
+    <div id="__ID__-pwrap" class="kw-hide">
+      <div id="__ID__-panel" class="kw-panel"></div>
+      <svg id="__ID__-mark" viewBox="-50 -50 100 100">
+        <g fill="#D97757">
+          <rect x="-5" y="-46" width="10" height="38" rx="5"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(30)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(60)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(90)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(120)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(150)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(180)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(210)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(240)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(270)"/>
+          <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(300)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(330)"/>
+        </g>
+      </svg>
+      <div id="__ID__-think">Thinking</div>
+      <div id="__ID__-secs">0s</div>
+      <div id="__ID__-rail"></div>
+    </div>
+    <div class="__ID__-bar kw-hide" id="__ID__-b0" style="top:796px;width:610px"></div>
+    <div class="__ID__-bar kw-hide" id="__ID__-b1" style="top:832px;width:560px"></div>
+    <div class="__ID__-bar kw-hide" id="__ID__-b2" style="top:868px;width:640px"></div>
+    <div class="__ID__-bar kw-hide" id="__ID__-b3" style="top:904px;width:500px"></div>
+    <div class="__ID__-bar kw-hide" id="__ID__-b4" style="top:940px;width:590px"></div>
+    <div class="__ID__-bar kw-hide" id="__ID__-b5" style="top:976px;width:380px"></div>
+    <div id="__ID__-div" class="kw-hide"></div>
+    <div id="__ID__-ans" class="kw-hide">Here's your answer.</div>
+    <div class="__ID__-abar kw-hide" id="__ID__-a0" style="top:1104px;width:690px"></div>
+
+    <!-- ===== diagram ===== -->
+    <div id="__ID__-diag">
+      <svg id="__ID__-dsvg" viewBox="0 0 1080 1200">
+        <defs>
+          <filter id="__ID__-gw" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="__ID__-gm" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path id="__ID__-axes" d="M170 430 L170 1040 L930 1040" fill="none" stroke="#FCFAFB" stroke-width="4"
+              stroke-linecap="round" stroke-linejoin="round" filter="url(#__ID__-gw)"/>
+        <g id="__ID__-ticks" class="kw-hide" stroke="#FCFAFB" stroke-width="4" stroke-linecap="round">
+          <line x1="250" y1="1030" x2="250" y2="1050"/><line x1="550" y1="1030" x2="550" y2="1050"/><line x1="850" y1="1030" x2="850" y2="1050"/>
+        </g>
+        <path id="__ID__-cperf" d="M250 960 C380 640, 620 560, 850 530" fill="none" stroke="#FCFAFB" stroke-width="7"
+              stroke-linecap="round" filter="url(#__ID__-gw)"/>
+        <path id="__ID__-cspeed" d="M250 530 C480 560, 720 640, 850 960" fill="none" stroke="#E01BE0" stroke-width="7"
+              stroke-linecap="round" filter="url(#__ID__-gm)"/>
+        <circle id="__ID__-pe0" class="kw-hide" cx="250" cy="960" r="10" fill="#FCFAFB"/>
+        <circle id="__ID__-pe1" class="kw-hide" cx="850" cy="530" r="10" fill="#FCFAFB"/>
+        <circle id="__ID__-se0" class="kw-hide" cx="250" cy="530" r="10" fill="#F05BF0"/>
+        <circle id="__ID__-se1" class="kw-hide" cx="850" cy="960" r="10" fill="#F05BF0"/>
+      </svg>
+      <div id="__ID__-x0" class="kw-glass __ID__-xl kw-hide" style="left:250px">Low</div>
+      <div id="__ID__-x1" class="kw-glass __ID__-xl kw-hide" style="left:550px">Medium</div>
+      <div id="__ID__-x2" class="kw-glass __ID__-xl kw-hide" style="left:850px">High</div>
+      <div id="__ID__-x1on" class="__ID__-on __ID__-xon kw-hide" style="left:550px">Medium</div>
+      <div id="__ID__-guide" class="kw-hide"></div>
+      <div id="__ID__-spulse" class="kw-pulse"></div>
+      <div id="__ID__-dot" class="kw-hide"></div>
+      <div id="__ID__-sweet" class="kw-pill kw-hide">Sweet Spot</div>
+      <div id="__ID__-perf" class="kw-pill kw-hide"><span class="__ID__-key" style="background:#FCFAFB;box-shadow:inset 0 0 0 3px #1A1A1A"></span>Performance</div>
+      <div id="__ID__-speed" class="kw-pill kw-hide"><span class="__ID__-key" style="background:#E01BE0"></span>Speed</div>
+      <div id="__ID__-opulse" class="kw-pulse"></div>
+      <div id="__ID__-opus" class="kw-redpill kw-hide"><span class="kw-txt">Opus 5.5</span></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+/*KW:JS*/
+const B = /*KW:BEATS*/{}/*END*/;
+const $ = (s) => "#__ID__-" + s;
+const at = (i) => KW.word(B, i);
+const tl = gsap.timeline({ paused: true });
+const STOP = [240, 540, 840];          // slider stop x (cam space)
+const FILLW = 600;
+
+// ---------- knob + fill move together (same ease, same duration) ----------
+function slide(t, from, to, dur, ease) {
+  tl.fromTo($("knob"), { x: STOP[from] - STOP[0] }, { x: STOP[to] - STOP[0], duration: dur, ease, immediateRender: false }, t);
+  tl.fromTo($("fill"), { scaleX: (STOP[from] - STOP[0]) / FILLW }, { scaleX: (STOP[to] - STOP[0]) / FILLW,
+    duration: dur, ease, immediateRender: false }, t);
+}
+// the active stop label turns red (a state change, never an exit)
+function active(t, k) {
+  [0, 1, 2].forEach((j) => KW.at(tl, $("o" + j), t, { opacity: j === k ? 1 : 0 }));
+}
+
+// ===================== PART 1: "start on medium effort" =====================
+KW.at(tl, $("cam"), 0, { x: 0, y: 141, scale: 1.22 });
+KW.title(tl, $("t1"), [Math.max(0.02, at(54) - 0.03), at(55) - 0.03, at(56) - 0.03, at(57) - 0.03]);
+
+// slider draws in from the left on frame 1
+tl.fromTo($("track"), { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" },
+  { opacity: 1, scaleX: 1, duration: 0.42, ease: "expo.out", immediateRender: false }, 0.02);
+KW.at(tl, $("fill"), 0.02, { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" });
+KW.blurIn(tl, [$("tk0"), $("tk1"), $("tk2")], 0.12, { stagger: 0.06, dur: 0.2 });
+KW.blurIn(tl, $("knob"), at(54), { dur: 0.26, scale: 0.6 });
+KW.pill(tl, $("l0"), at(54) + 0.08);
+KW.pill(tl, $("l1"), at(55) - 0.08);
+KW.pill(tl, $("l2"), at(55) + 0.04);
+
+// "medium": knob snaps to Medium, red fill, red label, pulse
+slide(at(56) - 0.14, 0, 1, 0.3, "power3.out");
+active(at(56) + 0.02, 1);
+KW.pulse(tl, $("kpulse"), at(56) + 0.02, { scale: 1.5 });
+// "effort": the camera keeps leaning in slowly (settles before the face cut ends)
+tl.to($("cam"), { scale: 1.25, duration: 1.4, ease: "power2.out" }, at(57) - 0.05);
+
+// ===================== PART 2: back from the face cut =====================
+const BACK = at(61);   // the stage returns on "the" (after the full-layout breather)
+KW.at(tl, $("t1"), BACK, { opacity: 0 });
+KW.at(tl, $("t2"), BACK, { opacity: 1 });
+KW.scramble(tl, $("t2a"), BACK, { dur: 0.45 });
+KW.scramble(tl, $("t2b"), BACK, { dur: 0.45, seed: 7 });
+
+// "the setting" -> Effort pill attaches above the slider
+KW.pill(tl, $("eff"), at(62) - 0.06);
+
+// "controls" -> camera pulls back to reveal the thinking panel; knob drops to Low
+KW.cam(tl, $("cam"), at(64) - 0.04, { x: 0, y: 0, scale: 1 }, { dur: 0.85, blur: 8 });
+slide(at(64) - 0.02, 1, 0, 0.3, "power3.out");
+active(at(64) + 0.16, 0);
+KW.blurIn(tl, $("pwrap"), at(64) + 0.04, { dur: 0.3, y: 30 });
+KW.blurIn(tl, $("b0"), at(64) + 0.16, { dur: 0.2 });
+
+// "how hard" -> knob sweeps Low -> High, thinking grows with it
+slide(at(65) - 0.04, 0, 2, 0.5, "power2.inOut");
+active(at(65) + 0.2, 1);
+active(at(66) + 0.02, 2);
+KW.blurIn(tl, [$("b1"), $("b2"), $("b3"), $("b4"), $("b5")], at(65) + 0.04, { stagger: 0.13, dur: 0.22, x: -12 });
+tl.fromTo($("mark"), { rotation: 0 }, { rotation: 300, duration: 2.4, ease: "none", immediateRender: false }, at(64));
+tl.fromTo($("mark"), { scale: 1 }, { scale: 1.22, duration: 0.5, ease: "power2.inOut", immediateRender: false }, at(65) - 0.04);
+KW.count(tl, $("secs"), 0, 12, at(65) - 0.04, { dur: 1.75, ease: "none", fmt: (v) => Math.round(v) + "s" });
+
+// "before" -> divider; "answers" -> the answer lands, camera nudges onto it
+KW.strike(tl, $("div"), at(69) - 0.04, { dur: 0.3 });
+KW.at(tl, $("div"), at(69) - 0.04, { opacity: 1 });
+KW.blurIn(tl, $("ans"), at(70) - 0.05, { dur: 0.26, y: 10 });
+KW.blurIn(tl, $("a0"), at(70) + 0.08, { dur: 0.22 });
+tl.to($("cam"), { y: -26, scale: 1.04, duration: 0.6, ease: "power3.out" }, at(70) - 0.05);
+
+// ===================== PART 3: the sweet spot diagram =====================
+// "And medium": first the knob snaps back from High to Medium (the tip is "start on medium"),
+// Medium lights red with a pulse, THEN the camera pans to the diagram on "on".
+slide(at(72) - 0.2, 2, 1, 0.22, "power3.out");   // lands ON "medium"
+active(at(72) - 0.02, 1);
+KW.pulse(tl, $("kpulse"), at(72) - 0.02, { scale: 1.5 });
+const PAN = at(74) - 0.05;   // Medium holds lit for ~0.45 s before the pan
+KW.cam(tl, $("cam"), PAN, { x: -1080, y: 0, scale: 1 }, { dur: 0.6, blur: 11 });
+KW.draw(tl, $("axes"), PAN + 0.08, { dur: 0.45, ease: "power2.out" });
+KW.blurIn(tl, $("ticks"), PAN + 0.42, { dur: 0.2, grey: false, scale: 1 });
+KW.pill(tl, $("x0"), PAN + 0.22);
+KW.pill(tl, $("x1"), PAN + 0.3);
+KW.pill(tl, $("x2"), PAN + 0.38);
+active2();
+function active2() { KW.at(tl, $("x1on"), PAN + 0.4, { opacity: 1 }); }
+KW.draw(tl, $("cperf"), PAN + 0.3, { dur: 0.9, ease: "power2.inOut" });
+KW.draw(tl, $("cspeed"), PAN + 0.44, { dur: 0.9, ease: "power2.inOut" });
+KW.blurIn(tl, $("pe0"), PAN + 0.3, { dur: 0.15, grey: false });
+KW.blurIn(tl, $("pe1"), PAN + 1.18, { dur: 0.18, grey: false, scale: 0.3 });
+KW.blurIn(tl, $("se0"), PAN + 0.44, { dur: 0.15, grey: false });
+KW.blurIn(tl, $("se1"), PAN + 1.32, { dur: 0.18, grey: false, scale: 0.3 });
+
+// "Opus 5.5" red pill
+KW.pulse(tl, $("opulse"), at(74) - 0.02, { peak: 0.75 });
+KW.pill(tl, $("opus"), at(74) - 0.04, { scramble: true });
+// slow lean-in for the rest of the scene
+tl.to($("cam"), { x: -1080 * 1.05, y: -4, scale: 1.05, duration: 3.0, ease: "power1.inOut" }, Math.max(at(75), PAN + 0.62));
+
+// "is a sweet spot": title swap, then the crossing lights up
+KW.at(tl, $("t2"), at(76) - 0.04, { opacity: 0 });
+KW.at(tl, $("t3"), at(76) - 0.04, { opacity: 1 });
+KW.scramble(tl, $("t3a"), at(76) - 0.04, { dur: 0.45, seed: 3 });
+KW.scramble(tl, $("t3b"), at(76) - 0.04, { dur: 0.45, seed: 11 });
+
+// crossing point of the two curves (they mirror around x = 550), found once from the path itself
+const P = document.querySelector($("cperf"));
+let lo = 0, hi = P.getTotalLength();
+for (let k = 0; k < 40; k++) { const m = (lo + hi) / 2; if (P.getPointAtLength(m).x < 550) lo = m; else hi = m; }
+const X = P.getPointAtLength(lo);
+const cx = 550, cy = Math.round(X.y);
+gsap.set($("dot"), { left: cx, top: cy });
+gsap.set($("spulse"), { left: cx, top: cy });
+gsap.set($("sweet"), { left: cx, top: cy + 118 });
+gsap.set($("guide"), { top: cy + 22, height: 1040 - cy - 30 });
+
+KW.pulse(tl, $("spulse"), at(78) - 0.02, { scale: 1.5 });
+tl.fromTo($("dot"), { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2.2)", immediateRender: false }, at(78) - 0.04);
+KW.pill(tl, $("sweet"), at(79) - 0.06, { origin: "50% 0%" });
+tl.fromTo($("guide"), { opacity: 1, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, at(78) + 0.1);
+
+// "performance" / "speed" -> legend pills on each curve's high end
+KW.pill(tl, $("perf"), at(81) - 0.06);
+KW.pill(tl, $("speed"), at(83) - 0.06);
+
+window.__timelines["__ID__"] = tl;
+})();
+</script>
+</template>

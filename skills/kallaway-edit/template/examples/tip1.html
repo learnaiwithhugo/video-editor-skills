@@ -1,0 +1,163 @@
+<!-- Scene tip1 (9.77 - 14.80 s): "stop telling it to think carefully. Opus 5.5 already decides how
+     much to think on its own."
+     A Claude-style chat composer: "Think carefully" types in as he says it, gets struck through in red
+     on "carefully" and tagged "Not Needed". On "Opus 5.5" the camera pans right to the Claude mark and
+     a red "Opus 5.5" pill. A Thinking meter appears on "already" and moves by itself (low, high, then
+     settles mid) through "decides how much to think", and "Decides On Its Own" pops in on "own". -->
+<!--KW:SFX [{"t": "w:36+0.04", "s": "typing", "dur": "w:40-0.02"}, {"t": "w:40+0.2", "s": "click"}, {"t": "w:40+0.34", "s": "pop"}, {"t": "w:41-0.02", "s": "whoosh"}, {"t": "w:42-0.06", "s": "pop"}, {"t": "w:43-0.06", "s": "click"}, {"t": "w:44+0.72", "s": "click", "db": -3}, {"t": "w:48", "s": "click", "db": -3}, {"t": "w:51-0.05", "s": "pop"}] -->
+<template>
+<style>
+/*KW:CSS*/
+#root { position: absolute; inset: 0; }
+/* ---- composer (cam x 0-1080) ---- */
+#__ID__-comp { left: 70px; top: 560px; width: 940px; height: 320px; border-radius: 34px;
+  background: linear-gradient(180deg, #2E2D2A 0%, #262523 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.11), inset 0 1.5px 0 rgba(255,255,255,0.06), 0 26px 70px rgba(0,0,0,0.65); }
+.__ID__-txt { position: absolute; left: 44px; top: 46px; right: 44px; font-family: "KW Grotesk"; font-weight: 600;
+  font-size: 50px; letter-spacing: -0.025em; line-height: 1.15; color: #F2F0EC; white-space: nowrap; }
+#__ID__-ph { color: #85827C; }
+.__ID__-awrap { position: relative; display: inline-block; }
+#__ID__-strike { position: absolute; left: -6px; right: -6px; top: 54%; height: 7px; margin-top: -3.5px; border-radius: 3px;
+  background: #E01E1A; box-shadow: 0 0 12px rgba(224,30,26,0.7); }
+#__ID__-caret { display: inline-block; width: 4px; height: 56px; background: #E9E6E0; vertical-align: -7px; margin-left: 3px; opacity: 0; }
+.__ID__-row { position: absolute; left: 34px; right: 34px; bottom: 34px; height: 64px; }
+.__ID__-plus { position: absolute; left: 0; top: 4px; width: 56px; height: 56px; border-radius: 16px;
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.16); }
+.__ID__-plus svg { position: absolute; left: 16px; top: 16px; }
+.__ID__-model { position: absolute; right: 96px; top: 14px; font-family: "KW Grotesk"; font-weight: 600; font-size: 32px;
+  color: #A8A49C; letter-spacing: -0.02em; }
+.__ID__-model svg { margin-left: 8px; vertical-align: 2px; }
+.__ID__-send { position: absolute; right: 0; top: 2px; width: 60px; height: 60px; border-radius: 16px; background: #EDEBE6; }
+.__ID__-send svg { position: absolute; left: 15px; top: 14px; }
+#__ID__-npwrap { position: absolute; left: 620px; top: 524px; width: 360px; height: 66px; display: flex; justify-content: flex-end; }
+#__ID__-npwrap .kw-redpill { position: relative; height: 66px; font-size: 35px; padding: 0 32px; border-radius: 33px; }
+#__ID__-pulse1 { left: 840px; top: 557px; }
+/* ---- Opus side (cam x 1080-2160) ---- */
+#__ID__-pulse2 { left: 1620px; top: 515px; width: 700px; height: 700px; margin: -350px 0 0 -350px; }
+#__ID__-mark { position: absolute; left: 1515px; top: 410px; width: 210px; height: 210px; }
+.__ID__-cwrap { position: absolute; left: 1080px; width: 1080px; display: flex; justify-content: center; }
+.__ID__-cwrap > * { position: relative; }
+#__ID__-opw { top: 656px; height: 72px; }
+#__ID__-op { height: 72px; font-size: 39px; padding: 0 38px; border-radius: 36px; }
+#__ID__-meter { position: absolute; left: 1190px; top: 800px; width: 860px; height: 150px; }
+.__ID__-mlab { position: absolute; left: 0; top: 0; font-family: "KW Grotesk"; font-weight: 800; font-size: 42px;
+  letter-spacing: -0.03em; color: #FCFAFB; }
+#__ID__-read { position: absolute; right: 0; top: 4px; font-family: "KW Grotesk"; font-weight: 700; font-size: 38px;
+  letter-spacing: -0.02em; color: #9A9A9A; text-align: right; }
+.__ID__-segs { position: absolute; left: 0; top: 70px; width: 860px; height: 72px; display: flex; gap: 11px; }
+.__ID__-seg { flex: 1; height: 72px; border-radius: 12px; background: #232323;
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.07); }
+#__ID__-autow { top: 1024px; height: 72px; }
+#__ID__-auto { font-size: 40px; padding: 14px 26px 15px; border-radius: 10px; }
+</style>
+<div id="root" data-composition-id="__ID__" data-width="1080" data-height="1920" data-layout-allow-overflow>
+  <div id="__ID__-title" class="kw-title">Stop Saying <span class="kw-serif" data-kw-whole>Think Carefully</span></div>
+  <div id="__ID__-cam" class="kw-cam">
+
+    <div id="__ID__-pulse1" class="kw-pulse"></div>
+    <div id="__ID__-comp" class="kw-panel kw-hide">
+      <div class="__ID__-txt" id="__ID__-phw"><span id="__ID__-ph">How can I help you today?</span></div>
+      <div class="__ID__-txt"><span class="__ID__-awrap"><span id="__ID__-ta">Think carefully</span><span id="__ID__-strike"></span></span><span id="__ID__-tb"> about this bug.</span><span id="__ID__-caret"></span></div>
+      <div class="__ID__-row">
+        <div class="__ID__-plus"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" stroke="#A8A49C" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+        <div class="__ID__-model">Opus 5.5<svg width="16" height="10" viewBox="0 0 16 10"><path d="M2 2l6 6 6-6" fill="none" stroke="#A8A49C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="__ID__-send"><svg width="30" height="32" viewBox="0 0 30 32"><path d="M15 28V5M5 14l10-10 10 10" fill="none" stroke="#1A1917" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+    </div>
+    <div id="__ID__-npwrap"><div id="__ID__-np" class="kw-redpill kw-hide"><span class="kw-txt">Not Needed</span></div></div>
+
+    <div id="__ID__-pulse2" class="kw-pulse"></div>
+    <svg id="__ID__-mark" class="kw-hide" viewBox="-50 -50 100 100">
+      <g fill="#D97757">
+        <rect x="-5" y="-46" width="10" height="38" rx="5"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(30)"/>
+        <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(60)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(90)"/>
+        <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(120)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(150)"/>
+        <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(180)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(210)"/>
+        <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(240)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(270)"/>
+        <rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(300)"/><rect x="-5" y="-46" width="10" height="38" rx="5" transform="rotate(330)"/>
+      </g>
+    </svg>
+    <div id="__ID__-opw" class="__ID__-cwrap"><div id="__ID__-op" class="kw-redpill kw-hide"><span class="kw-txt">Opus 5.5</span></div></div>
+
+    <div id="__ID__-meter" class="kw-hide">
+      <div class="__ID__-mlab">Thinking</div>
+      <div id="__ID__-read">Low</div>
+      <div class="__ID__-segs" id="__ID__-segs"></div>
+    </div>
+    <div id="__ID__-autow" class="__ID__-cwrap"><div id="__ID__-auto" class="kw-pill kw-hide">Decides On Its Own</div></div>
+  </div>
+</div>
+<script>
+(function () {
+/*KW:JS*/
+const B = /*KW:BEATS*/{}/*END*/;
+const $ = (s) => "#__ID__-" + s;
+const at = (i) => KW.word(B, i);
+const tl = gsap.timeline({ paused: true });
+
+// ---- title ----
+KW.title(tl, $("title"), [Math.max(0.02, at(35)), at(36), at(39)]);
+
+// ---- composer: arrives with "stop", camera settles back onto it ----
+KW.blurIn(tl, $("comp"), 0.02, { dur: 0.3, y: 20 });
+tl.fromTo($("cam"), { scale: 1.07 }, { scale: 1, duration: 1.4, ease: "power2.out", immediateRender: false }, 0.02);
+
+// "telling it to think carefully": the prompt types in as he says it.
+const tType = at(36) + 0.04;
+KW.at(tl, $("phw"), tType, { opacity: 0 });
+KW.at(tl, $("caret"), tType, { opacity: 1 });
+KW.type(tl, $("ta"), tType, at(40) - 0.02);
+KW.type(tl, $("tb"), at(40) - 0.02, at(40) + 0.2);
+// caret blinks after typing (deterministic sets)
+for (let t = at(40) + 0.42, on = false; t < at(41) - 0.02; t += 0.26, on = !on) KW.at(tl, $("caret"), t, { opacity: on ? 1 : 0 });
+
+// end of "carefully": red strike through "Think carefully", text greys out, "Not Needed" tag lands.
+const tStrike = at(40) + 0.2;
+// (KW.strike only sets opacity in its from-state, so on a backward seek it fades the bar to the CSS
+// value: keep the bar opaque in CSS and hide it with scaleX 0 from frame 0 instead.)
+KW.at(tl, $("strike"), 0, { scaleX: 0, transformOrigin: "0% 50%" });
+KW.strike(tl, $("strike"), tStrike, { dur: 0.22 });
+tl.to($("ta"), { color: "#77736C", duration: 0.2, ease: "power2.out" }, tStrike + 0.06);
+KW.pulse(tl, $("pulse1"), tStrike + 0.12, { peak: 0.8, scale: 1.3 });
+KW.pill(tl, $("np"), tStrike + 0.12, { origin: "100% 50%" });
+
+// ---- "Opus 5.5": camera pans right to the Claude mark + red pill ----
+const tOpus = at(41);
+KW.cam(tl, $("cam"), tOpus - 0.03, { x: -1080, y: 0, scale: 1 }, { dur: 0.75, blur: 9 });
+KW.blurIn(tl, $("mark"), tOpus + 0.04, { dur: 0.32, scale: 0.7, blur: 20 });
+tl.fromTo($("mark"), { rotation: -40 }, { rotation: 0, duration: 0.9, ease: "expo.out", immediateRender: false }, tOpus + 0.04);
+KW.pulse(tl, $("pulse2"), at(42) - 0.05, { scale: 1.5 });
+KW.pill(tl, $("op"), at(42) - 0.06, { scramble: true });
+
+// ---- Thinking meter: appears on "already", then moves by itself ----
+const NSEG = 12, segsEl = KW.q($("segs")), segs = [];
+for (let k = 0; k < NSEG; k++) { const d = document.createElement("div"); d.className = "__ID__-seg"; segsEl.appendChild(d); segs.push(d); }
+const readEl = KW.q($("read"));
+const paint = (lv) => {
+  const f = lv * NSEG;
+  segs.forEach((s, k) => {
+    const a = Math.max(0, Math.min(1, f - k));            // 0 = off, 1 = fully lit
+    const c = Math.round(35 + a * (252 - 35)), c2 = Math.round(35 + a * (248 - 35));
+    s.style.background = `rgb(${c},${c2},${c2})`;
+    s.style.boxShadow = a > 0.02 ? `0 0 ${Math.round(18 * a)}px rgba(255,255,255,${(0.35 * a).toFixed(2)})`
+                                 : "inset 0 0 0 1.5px rgba(255,255,255,0.07)";
+  });
+  readEl.textContent = lv < 0.34 ? "Low" : lv < 0.74 ? "Medium" : "High";
+};
+paint(0.08);
+const meterT = at(43) - 0.06;
+KW.blurIn(tl, $("meter"), meterT, { dur: 0.28, y: 18 });
+const lvl = { v: 0.08 };
+const upd = () => paint(lvl.v);
+tl.fromTo(lvl, { v: 0.08 }, { v: 0.25, duration: 0.3, ease: "power2.out", immediateRender: false, onUpdate: upd }, at(43) + 0.05);
+tl.fromTo(lvl, { v: 0.25 }, { v: 0.95, duration: 0.75, ease: "power2.inOut", immediateRender: false, onUpdate: upd }, at(44));
+tl.fromTo(lvl, { v: 0.95 }, { v: 0.58, duration: 0.5, ease: "power3.out", immediateRender: false, onUpdate: upd }, at(48) - 0.04);
+
+// "on its own": the white label pops in and the camera leans in a touch.
+KW.pill(tl, $("auto"), at(51) - 0.05);
+KW.cam(tl, $("cam"), at(49) - 0.02, { x: -1080 - 0.05 * 1080, y: -36, scale: 1.05 }, { dur: 0.7, blur: 3 });
+
+window.__timelines["__ID__"] = tl;
+})();
+</script>
+</template>

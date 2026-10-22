@@ -1,0 +1,180 @@
+<!-- Scene tip3: "tell it what done looks like. Give it everything you want to accomplish and what the final
+     outcome slash goal looks like."
+     Title "Tell It What Done" + red claim box "Looks Like" builds with the words. A Claude-style prompt box
+     unfolds and types the task; three checklist rows tick in on "everything you want to accomplish" while the
+     box grows and the camera eases down it; on "final outcome" the camera pulls back and a red-bordered
+     outcome field appears and types; "/ Goal" lands on "slash goal"; a "Done" stamp hits on the last "looks like". -->
+<!--KW:SFX [{"t": "w:87+0.16", "s": "typing", "dur": "w:91-0.02"}, {"t": "w:90-0.03", "s": "impact", "db": -3}, {"t": "w:94-0.06", "s": "click"}, {"t": "w:95-0.02", "s": "click"}, {"t": "w:98-0.06", "s": "click"}, {"t": "w:102-0.04", "s": "whoosh"}, {"t": "w:103-0.02", "s": "typing", "dur": "w:104-0.06"}, {"t": "w:104-0.04", "s": "key"}, {"t": "w:105-0.04", "s": "pop"}, {"t": "w:106+0.08", "s": "impact"}, {"t": "w:106+0.32", "s": "sparkle"}] -->
+<template>
+<style>
+/*KW:CSS*/
+#root { position: absolute; inset: 0; }
+#__ID__-glow { position: absolute; left: 540px; top: 700px; width: 1000px; height: 1000px; margin: -500px 0 0 -500px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(196,21,20,0.10) 0%, rgba(196,21,20,0.03) 40%, rgba(0,0,0,0) 70%); }
+
+#__ID__-card { left: 120px; top: 390px; width: 840px; height: 200px; border-radius: 26px;
+  background: linear-gradient(180deg, #202020, #171717);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.10), 0 24px 70px rgba(0,0,0,0.65); transform-origin: 50% 0%; }
+#__ID__-task { position: absolute; left: 164px; top: 432px; height: 48px; font-family: "KW Grotesk"; font-weight: 700;
+  font-size: 40px; letter-spacing: -0.03em; color: #FCFAFB; line-height: 48px; white-space: pre; }
+#__ID__-caret { position: absolute; top: 436px; width: 3px; height: 40px; background: #FCFAFB; border-radius: 1px; }
+
+.__ID__-row { position: absolute; left: 164px; height: 48px; }
+.__ID__-chk { position: absolute; left: 0; top: 2px; width: 44px; height: 44px; }
+.__ID__-rt { position: absolute; left: 66px; top: 0; font-family: "KW Grotesk"; font-weight: 600; font-size: 36px;
+  letter-spacing: -0.025em; color: #E8E6E7; line-height: 48px; white-space: nowrap; }
+
+#__ID__-fo { position: absolute; left: 164px; top: 754px; height: 56px; display: flex; align-items: center; gap: 14px; }
+#__ID__-fol { font-family: "KW Grotesk"; font-weight: 800; font-size: 37px; letter-spacing: -0.035em; color: #FCFAFB; white-space: nowrap; }
+#__ID__-slash { font-family: "KW Grotesk"; font-weight: 600; font-size: 38px; color: #7C7A7B; }
+#__ID__-goal { position: relative; height: 54px; padding: 0 26px; border-radius: 27px; font-size: 31px; }
+#__ID__-field { position: absolute; left: 164px; top: 826px; width: 752px; height: 92px; box-sizing: border-box;
+  border: 2.5px solid #C41514; border-radius: 14px; background: #121212;
+  box-shadow: 0 0 0 4px rgba(196,21,20,0.12), 0 0 24px rgba(196,21,20,0.22); }
+#__ID__-ftxt { position: absolute; left: 192px; top: 826px; height: 92px; font-family: "KW Grotesk"; font-weight: 600;
+  font-size: 34px; letter-spacing: -0.025em; color: #FCFAFB; line-height: 92px; white-space: pre; }
+
+#__ID__-foot { position: absolute; left: 120px; top: 510px; width: 840px; height: 50px; }
+#__ID__-plus { position: absolute; left: 40px; top: 0; width: 48px; height: 48px; border-radius: 50%; box-sizing: border-box;
+  border: 1.5px solid rgba(255,255,255,0.22); }
+#__ID__-plus::before, #__ID__-plus::after { content: ""; position: absolute; left: 22px; top: 13px; width: 2px; height: 20px;
+  background: #BDBBBC; border-radius: 1px; }
+#__ID__-plus::after { left: 13px; top: 22px; width: 20px; height: 2px; }
+#__ID__-model { position: absolute; right: 108px; top: 0; height: 48px; line-height: 48px; font-family: "KW Grotesk";
+  font-weight: 600; font-size: 28px; letter-spacing: -0.02em; color: #9C9A9B; white-space: nowrap; }
+#__ID__-model svg { width: 18px; height: 18px; margin-left: 8px; vertical-align: -1px; }
+#__ID__-send { position: absolute; right: 40px; top: 0; width: 48px; height: 48px; border-radius: 50%; background: #FCFAFB; }
+#__ID__-send svg { position: absolute; left: 12px; top: 12px; width: 24px; height: 24px; }
+
+#__ID__-dpulse { left: 836px; top: 757px; }
+#__ID__-done { position: absolute; left: 716px; top: 700px; width: 240px; height: 114px; box-sizing: border-box;
+  background: #C41514; border-radius: 10px; color: #FFFFFF; text-align: center;
+  font-family: "KW Serif"; font-style: italic; font-size: 98px; line-height: 110px; letter-spacing: -0.01em;
+  box-shadow: inset 0 0 0 5px #C41514, inset 0 0 0 8px rgba(255,255,255,0.85), 0 16px 40px rgba(0,0,0,0.55), 0 0 40px rgba(196,21,20,0.45); }
+</style>
+<div id="root" data-composition-id="__ID__" data-width="1080" data-height="1920" data-layout-allow-overflow>
+  <div id="__ID__-glow" class="kw-hide"></div>
+  <div id="__ID__-title" class="kw-title two"><span class="kw-line">Tell It What <span class="kw-serif" data-kw-whole>Done</span></span><span class="kw-line"><span class="kw-redbox" data-kw-whole>Looks Like</span></span></div>
+
+  <div id="__ID__-cam" class="kw-cam">
+    <div id="__ID__-card" class="kw-panel kw-hide"></div>
+    <div id="__ID__-foot" class="kw-hide">
+      <div id="__ID__-plus"></div>
+      <div id="__ID__-model">Opus 5.5<svg viewBox="0 0 18 18"><path d="M4 7 L9 12 L14 7" fill="none" stroke="#9C9A9B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="__ID__-send"><svg viewBox="0 0 24 24"><path d="M12 19 V5 M5.5 11.5 L12 5 L18.5 11.5" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+
+    <div id="__ID__-task">Build my booking page.</div>
+    <div id="__ID__-caret" class="kw-hide"></div>
+
+    <div class="__ID__-row" id="__ID__-r0" style="top:510px">
+      <svg class="__ID__-chk" viewBox="0 0 40 40"><circle id="__ID__-c0" class="kw-hide" cx="20" cy="20" r="19" fill="#C41514"/>
+        <path id="__ID__-k0" d="M11.5 20.5 L17.5 26.5 L28.5 14" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="__ID__-rt kw-hide" id="__ID__-t0">Sync it with my calendar</div>
+    </div>
+    <div class="__ID__-row" id="__ID__-r1" style="top:588px">
+      <svg class="__ID__-chk" viewBox="0 0 40 40"><circle id="__ID__-c1" class="kw-hide" cx="20" cy="20" r="19" fill="#C41514"/>
+        <path id="__ID__-k1" d="M11.5 20.5 L17.5 26.5 L28.5 14" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="__ID__-rt kw-hide" id="__ID__-t1">Take a deposit at booking</div>
+    </div>
+    <div class="__ID__-row" id="__ID__-r2" style="top:666px">
+      <svg class="__ID__-chk" viewBox="0 0 40 40"><circle id="__ID__-c2" class="kw-hide" cx="20" cy="20" r="19" fill="#C41514"/>
+        <path id="__ID__-k2" d="M11.5 20.5 L17.5 26.5 L28.5 14" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="__ID__-rt kw-hide" id="__ID__-t2">Email a confirmation</div>
+    </div>
+
+    <div id="__ID__-fo">
+      <span id="__ID__-fol" class="kw-hide">Final outcome</span>
+      <span id="__ID__-slash" class="kw-hide">/</span>
+      <span id="__ID__-goal" class="kw-redpill kw-hide"><span class="kw-txt">Goal</span></span>
+    </div>
+    <div id="__ID__-field" class="kw-hide"></div>
+    <div id="__ID__-ftxt">A client books and pays in 60 seconds</div>
+
+    <div id="__ID__-dpulse" class="kw-pulse"></div>
+    <div id="__ID__-done" class="kw-hide">Done</div>
+  </div>
+</div>
+<script>
+(function () {
+/*KW:JS*/
+const B = /*KW:BEATS*/{}/*END*/;
+const $ = (s) => "#__ID__-" + s;
+const at = (i) => KW.word(B, i);
+const tl = gsap.timeline({ paused: true });
+
+// ---- camera framing: keep the growing card centred on screen ----
+const TOP = 390, PAD = 110;                 // card top; content end -> card bottom
+const camY = (bottom, s, target) => target - (600 + ((TOP + bottom) / 2 - 600) * s);
+let cardH = 200;                            // current card height (bottom = 590)
+function grow(t, contentEnd, s, target, o = {}) {
+  const bottom = contentEnd + PAD, h = bottom - TOP;
+  tl.fromTo($("card"), { height: cardH }, { height: h, duration: 0.42, ease: "expo.out", immediateRender: false }, t);
+  tl.fromTo($("foot"), { y: cardH - 200 }, { y: h - 200, duration: 0.42, ease: "expo.out", immediateRender: false }, t);
+  if (o.cam) KW.cam(tl, $("cam"), t, { x: 0, y: camY(bottom, s, target), scale: s }, o.cam);
+  else tl.to($("cam"), { y: camY(bottom, s, target), scale: s, duration: 0.7, ease: "expo.out" }, t);
+  cardH = h;
+}
+
+// ===== title: "Tell It What Done" + red claim box =====
+KW.title(tl, $("title"), [Math.max(0.02, at(86) - 0.03), at(87) - 0.03, at(88) - 0.03, at(89) - 0.03, at(90) - 0.03]);
+
+// ===== the prompt box unfolds and types the task =====
+KW.at(tl, $("cam"), 0, { x: 0, y: camY(590, 1.12, 740), scale: 1.12 });
+const T0 = at(87) - 0.04;
+tl.fromTo($("card"), { opacity: 0, scaleY: 0.08, filter: "blur(10px)" },
+  { opacity: 1, scaleY: 1, filter: "blur(0px)", duration: 0.24, ease: "power3.out", immediateRender: false }, T0);
+KW.blurIn(tl, $("foot"), T0 + 0.1, { dur: 0.22, grey: false });
+KW.blurIn(tl, $("glow"), T0, { dur: 0.8, blur: 40, scale: 0.7 });
+KW.at(tl, $("caret"), T0 + 0.12, { opacity: 1 });
+KW.type(tl, $("task"), T0 + 0.2, at(91) - 0.02);
+// caret follows the typing: a proxy tween moves it to the end of the visible text
+const caret = document.querySelector($("caret"));
+const cp = { n: 0 };
+const full = "Build my booking page.";
+const taskEl = document.querySelector($("task"));
+gsap.set(caret, { left: 168 });
+tl.fromTo(cp, { n: 0 }, { n: 1, duration: Math.max(0.05, at(91) - 0.02 - (T0 + 0.2)) + 0.05, ease: "none", immediateRender: false,
+  onUpdate: () => { caret.style.left = (taskEl.offsetLeft + taskEl.offsetWidth + 4) + "px"; } }, T0 + 0.2);
+
+// caret blinks while he finishes the line
+KW.at(tl, $("caret"), at(91) + 0.3, { opacity: 0 });
+KW.at(tl, $("caret"), at(91) + 0.6, { opacity: 1 });
+
+// ===== "everything you want to accomplish": three ticked rows, box grows, camera eases down =====
+const ROWT = [at(94) - 0.06, at(95) - 0.02, at(98) - 0.06];
+ROWT.forEach((t, k) => {
+  if (k === 0) KW.at(tl, $("caret"), t, { opacity: 0 });
+  grow(t - 0.04, 510 + 78 * k + 48, 1.12 - 0.03 * (k + 1), 740);
+  tl.fromTo($("c" + k), { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" },
+    { opacity: 1, scale: 1, duration: 0.26, ease: "back.out(2)", immediateRender: false }, t);
+  KW.draw(tl, $("k" + k), t + 0.1, { dur: 0.2, ease: "power2.out" });
+  KW.blurIn(tl, $("t" + k), t + 0.02, { dur: 0.24, x: -14 });
+});
+
+// ===== "final outcome": camera pulls back, outcome field appears and types =====
+const TF = at(102) - 0.04;
+grow(TF, 918, 1.0, 760, { cam: { dur: 0.8, blur: 6 } });
+KW.blurIn(tl, $("fol"), TF + 0.04, { dur: 0.24, x: -12 });
+tl.fromTo($("field"), { opacity: 0, scaleX: 0.92, filter: "blur(10px)" },
+  { opacity: 1, scaleX: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out", immediateRender: false, transformOrigin: "0% 50%" }, TF + 0.12);
+KW.type(tl, $("ftxt"), at(103) - 0.02, at(104) - 0.06);
+
+// ===== "slash goal" =====
+KW.blurIn(tl, $("slash"), at(104) - 0.04, { dur: 0.2 });
+KW.pill(tl, $("goal"), at(105) - 0.04, { scramble: true });
+
+// ===== "looks like": the Done stamp hits =====
+const TD = at(106) - 0.03;
+KW.pulse(tl, $("dpulse"), TD + 0.08, { scale: 1.6 });
+tl.fromTo($("done"), { opacity: 0, scale: 1.9, rotation: -16, filter: "blur(8px)" },
+  { opacity: 1, scale: 1, rotation: -7, filter: "blur(0px)", duration: 0.24, ease: "power4.in", immediateRender: false }, TD - 0.1);
+tl.fromTo($("cam"), { x: 0, y: camY(1028, 1.0, 760), scale: 1 }, { keyframes: [
+    { x: -6, y: camY(1028, 1.0, 760) + 7, scale: 1.012, duration: 0.05, ease: "power2.out" },
+    { x: -34, y: camY(1028, 1.05, 760) - 8, scale: 1.05, duration: 0.7, ease: "expo.out" }],
+  immediateRender: false }, TD + 0.14);
+
+window.__timelines["__ID__"] = tl;
+})();
+</script>
+</template>

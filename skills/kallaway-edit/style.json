@@ -1,0 +1,13 @@
+{
+ "_about": "The Kallaway style's numbers. build.py reads this; edit here to change the look, never the scripts. Measured from 3 Kallaway reference reels (the measurements are in references/style-spec.json; the reels themselves are not included).",
+ "card": {"x0": 68, "x1": 1012, "top": 1404, "r": 40},
+ "caption_y_stage": 1236,
+ "pop": 104,
+ "caption_y_full_min": 1160,
+ "caption_y_full_max": 1420,
+ "caption_px": 58,
+ "caption_em_px": 66,
+ "caption_tracking_em": -0.035,
+ "music_under_voice_db": 21,
+ "music_gap_lift_db": 5
+}
