@@ -92,7 +92,7 @@ def main():
                    f"(target ~10-16); {len(hits)} effects")
         loud = [h for h in hits if h["under_voice_db"] < 8]
         for h in loud:
-            rep.append(f"  ! {h['s']} at {h['t']:.2f}s only {h["under_voice_db"]:.1f} dB under the voice")
+            rep.append(f"  ! {h['s']} at {h['t']:.2f}s only {h['under_voice_db']:.1f} dB under the voice")
     same = [(a["t"], b2["t"]) for a, b2 in zip(hits, hits[1:]) if b2["t"] - a["t"] < 2 / 30]
     rep.append(f"two hits on one frame: {len(same)}")
 

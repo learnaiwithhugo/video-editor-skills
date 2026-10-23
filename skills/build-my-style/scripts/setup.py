@@ -32,10 +32,11 @@ ok = True
 ENGINE_FILES = ["library.js", "app.js", "boot.js", "style.css", "index.html", "shine.html", "zoom.html", "shadow.html", "sfx.html"]
 
 
-def say(good, msg, fix=""):
+def say(good, msg, fix="", optional=False):
+    """optional = nice to have: it shows up as LATER and never makes the check say NOT READY."""
     global ok
-    print(("  OK       " if good else "  MISSING  ") + msg + ("" if good else f"\n           fix: {fix}"))
-    ok = ok and good
+    print(("  OK       " if good else ("  LATER    " if optional else "  MISSING  ")) + msg + ("" if good else f"\n           fix: {fix}"))
+    ok = ok and (good or optional)
 
 
 def out(cmd, timeout=60, env=None):
@@ -82,7 +83,7 @@ def check():
         "install Google Chrome from https://www.google.com/chrome, or say yes when I offer to install HyperFrames")
     hv = out(["npx", "--no-install", f"hyperframes@{PIN}", "--version"], timeout=60, env=ENV) if shutil.which("npx") else ""
     say(hv == PIN, f"HyperFrames {PIN} (renders your edits later, not needed to build the style)",
-        "I can install it for you (one command, about 2 minutes). Just say yes.")
+        "I can install it for you (one command, about 2 minutes). Just say yes.", optional=True)
     free = shutil.disk_usage(Path.home()).free / 1e9
     say(free > 3, f"Free disk space ({free:.0f} GB)", "free up a few GB first.")
     cfg = config()

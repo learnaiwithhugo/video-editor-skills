@@ -21,24 +21,48 @@ Build your own video editing style, then let Claude edit your raw talking-head c
 
 ## Install
 
-Open Claude Code (the Code tab in the Claude desktop app works), paste this and press Enter:
+You don't need to know any code. You paste one line into Claude and it does the rest.
 
-```
-Install the skills from https://github.com/learnaiwithhugo/video-editor-skills
-```
+1. **Open Claude Code.** Download the Claude app from [claude.ai/download](https://claude.ai/download), sign in with your paid Claude account, click the **Code** tab, choose **Local**, then pick any folder (make a new one called "My videos" if you like). A box to type in appears at the bottom.
+2. **Paste this into that box and press Enter:**
 
-Then start a new session and type `/build-my-style`. When your style is done, type `/edit-my-video`.
+   ```
+   Install the skills from https://github.com/learnaiwithhugo/video-editor-skills
+   ```
+
+   Claude will ask your permission to run a few things. Say yes. If a Mac window pops up asking to install "developer tools", click **Install**, wait for it to finish, then paste the line again.
+3. **Start a new chat** (so Claude sees the new skills), type `/build-my-style` and press Enter. Claude takes it from there, one question at a time.
+4. When your style is done, type `/edit-my-video` and drop in your clips.
 
 To update later, paste the same line again. Your style and your saved folders stay put.
+
+### First run: what Claude will ask you to install
+
+The first time, Claude checks your Mac and lists anything missing (see "What you need" below). It tells you exactly what to paste. Anything it asks you to paste goes in the **Terminal** app, not in the chat:
+
+- Press **Command + Space**, type **Terminal**, press Enter. A window with a blinking cursor opens.
+- Paste with **Command + V**, then press Enter. Wait until the cursor comes back. Some commands take a few minutes. That's normal.
+- If it asks for a password, it's your Mac login password. Nothing shows while you type it. Type it and press Enter.
+
+If you'd rather get the tools in before you start, do this once:
+
+1. In Terminal, install Homebrew (the free installer Mac developers use). Copy the line from [brew.sh](https://brew.sh). It takes a few minutes. When it finishes it prints "Next steps": copy and run those lines too, then close Terminal and open it again.
+2. Then paste:
+
+   ```
+   brew install ffmpeg node python yt-dlp
+   ```
+
+And if you don't have Google Chrome, [download it](https://www.google.com/chrome).
 
 ## For Claude: how to install
 
 When the user asks you to install (or update) these skills, do exactly this:
 
-1. Clone the repo into a temporary folder:
-   `git clone --depth 1 https://github.com/learnaiwithhugo/video-editor-skills "$TMPDIR/video-editor-skills"`
-   (if that folder already exists from an earlier run, delete it first).
-2. Run `bash "$TMPDIR/video-editor-skills/install.sh"`. It copies `build-my-style`, `edit-my-video`, `kallaway-edit` and `new-edit-style` into `~/.claude/skills/`, moves any older copy to `~/.claude/skills-backup/` instead of deleting it, and carries over each skill's saved folders.
+1. Clone the repo into a fresh temporary folder:
+   `DIR="$(mktemp -d)" && git clone --depth 1 https://github.com/learnaiwithhugo/video-editor-skills "$DIR/video-editor-skills"`
+   (if git isn't installed, a Mac window offers to install the developer tools: tell the user to click Install, wait, and tell you when it's done).
+2. Run `bash "$DIR/video-editor-skills/install.sh"`. It copies `build-my-style`, `edit-my-video`, `kallaway-edit` and `new-edit-style` into `~/.claude/skills/`, moves any older copy to `~/.claude/skills-backup/` instead of deleting it, and carries over each skill's saved folders.
 3. Tell the user, in plain English: the skills are installed, start a new Claude Code session, then type `/build-my-style` to make their style and `/edit-my-video` to edit with it. Mention what they need (below), and that each skill checks it all for them.
 
 Don't change the user's settings or install anything else. Each skill's own setup step handles the tools on first run.
@@ -48,15 +72,17 @@ Don't change the user's settings or install anything else. Each skill's own setu
 - A Mac
 - Claude Code (a paid Claude plan)
 - About 8 GB of free space
-- Free tools: ffmpeg, Node.js, Python and yt-dlp. The easy way: install Homebrew from [brew.sh](https://brew.sh), then paste this into the Terminal app:
-
-  ```
-  brew install ffmpeg node python yt-dlp
-  ```
-
+- Free tools: ffmpeg (cuts video and sound), Node.js (runs the renderer), Python (runs the helper scripts) and yt-dlp (downloads reels you want to learn from)
 - Google Chrome (for taking screenshots of real websites)
 
-On first run each skill checks your Mac, tells you what's missing in plain English, and asks before installing anything else itself: HyperFrames (the free video renderer), Whisper (hears every word so it can pick takes and write captions) and a few small Python helpers.
+On first run each skill checks your Mac, tells you what's missing in plain English, and asks before installing anything else itself: HyperFrames (the free video renderer), Whisper (hears every word so it can pick takes and write captions) and a few small Python helpers. Those go in their own folder (`~/.claude-video-editor`), never into the Mac's own Python.
+
+## If something goes wrong
+
+- **"command not found: brew"** in Terminal: run the "Next steps" lines Homebrew printed at the end of its install, then close and reopen Terminal.
+- **The check says NOT READY:** read the line marked MISSING, run the fix it gives, then tell Claude "done" and it checks again.
+- **A page won't load or a button says it failed:** tell Claude. It restarts the little page server for you and gives you a fresh link. Your marks are saved in the browser.
+- **Anything else:** copy the red or confusing text, paste it to Claude and ask what it means.
 
 ## Nothing third-party is bundled
 

@@ -310,6 +310,18 @@ def listening(port):
 
 
 def serve(sd):
+    # build-my-style's server.py knows which port THIS style folder's server is on, never mistakes another
+    # program on port 4870 for it, and moves to the next free port if 4870 is busy. Use it when it's installed.
+    bms = SK.parent / "build-my-style" / "scripts" / "server.py"
+    if bms.exists():
+        for cmd in ("status", "start"):
+            r = subprocess.run([sys.executable, "-I", str(bms), cmd, str(sd)], capture_output=True, text=True)
+            m = re.search(r"RUNNING http://localhost:(\d+)", r.stdout)
+            if m:
+                print(f"{'Already running' if cmd == 'status' else 'Started'}: http://localhost:{m.group(1)}")
+                return int(m.group(1))
+        print("Could not start the style page server:\n" + (r.stdout + r.stderr).strip())
+        return None
     port = port_of(sd)
     if listening(port):
         print(f"Already running: http://localhost:{port}")

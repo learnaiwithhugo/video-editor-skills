@@ -27,6 +27,7 @@ import re
 import shutil
 import subprocess
 import sys
+import urllib.error
 import urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -128,8 +129,11 @@ def fetch(style, url, need, name, licence):
     fn = re.sub(r"[^A-Za-z0-9._-]", "_", url.split("?")[0].split("/")[-1]) or "sound.wav"
     dst = dl / fn
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        dst.write_bytes(r.read())
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            dst.write_bytes(r.read())
+    except (urllib.error.URLError, OSError) as e:   # a wrong id answers 403/404; no internet answers URLError
+        raise SystemExit(f"Couldn't download that sound ({e}). Check the link is right and the internet is on, then try another sound.")
     add(style, dst, need, name, source=url, licence=licence)
 
 

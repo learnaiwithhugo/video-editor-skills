@@ -155,7 +155,7 @@ def install():
         print("\nSetting up the editor's own Python folder (one time, ~1 minute) ...")
         subprocess.run([sys.executable, "-m", "venv", "--clear", str(state.VENV)], check=True)
     subprocess.run([str(py), "-m", "pip", "install", "-q", "--upgrade", "pip"], check=True)
-    subprocess.run([str(py), "-m", "pip", "install", "-q", "faster-whisper>=1.1", "numpy", "pillow"],
+    subprocess.run([str(py), "-m", "pip", "install", "-q", "faster-whisper>=1.1", "av>=14,<19", "numpy", "pillow"],
                    check=True)
     say(True, "Transcription engine (faster-whisper) in the editor's own Python folder")
 

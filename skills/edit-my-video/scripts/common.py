@@ -16,6 +16,21 @@ DEFAULT_STYLE = Path.home() / "edit-style"                # build-my-style sugge
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 W, H, FPS = 1080, 1920, 30
 
+# The Python helpers (faster-whisper, playwright, pillow) live in their own little folder, never in the Mac's
+# own Python (Homebrew's Python refuses `pip install` there). setup.py --install makes it; every script
+# imports this file first, so adding it to the path here makes the packages importable everywhere.
+DATA = Path(os.environ.get("VIDEO_EDITOR_DATA") or Path.home() / ".claude-video-editor")
+VENV = DATA / "edit-venv"
+
+
+def use_venv():
+    for sp in VENV.glob("lib/python%d.%d/site-packages" % sys.version_info[:2]):
+        if str(sp) not in sys.path:
+            sys.path.insert(0, str(sp))
+
+
+use_venv()
+
 
 def load_config():
     try:
@@ -71,7 +86,7 @@ def loudness(path):
 
 
 def whisper_model(name="medium.en"):
-    """faster-whisper, from the skill's own .venv if setup made one, else the system Python."""
+    """faster-whisper, from the helpers folder setup.py --install made (see use_venv above)."""
     try:
         from faster_whisper import WhisperModel
     except ImportError:
