@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Style Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <h1>Style Studio <span class="round-tag" id="roundTag"></span></h1>
+    <div class="top-right">
+      <button class="lablink" id="safeBtn">Safe zones</button>
+      <a class="lablink" href="shine.html">Shine Lab</a>
+      <a class="lablink" href="zoom.html">Zoom Lab</a>
+      <a class="lablink" href="shadow.html">Shadow Lab</a>
+      <a class="lablink" href="sfx.html">Sounds</a>
+      <span class="count" id="count"></span>
+      <button class="submit" id="submit">Submit review</button>
+    </div>
+  </div>
+</header>
+<main id="main"></main>
+<div class="modal" id="modal" hidden>
+  <div class="modal-body">
+    <div class="modal-phone"><div class="stage-wrap"><div class="stage"></div></div></div>
+    <div class="controls"></div>
+  </div>
+  <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script src="library.js"></script>
+<script src="custom.js"></script>
+<script src="boot.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

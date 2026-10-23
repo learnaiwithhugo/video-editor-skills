@@ -21,3 +21,15 @@ work/
 
 # macOS
 .DS_Store
+
+# User data the style and edit skills write (never belongs in the repo)
+reviews/
+locked/
+test/
+progress/
+renders/
+node_modules/
+skills/edit-my-video/engine/fonts/
+*.wav
+*.mp3
+*.icns

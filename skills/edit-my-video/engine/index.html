@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>__TITLE__</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/kit.css" />
+    <style>
+      /* Per-video styles go here. Design each beat fresh inside the look (STYLE.md is guardrails, not a menu). */
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="__DURATION__" data-width="1080" data-height="1920">
+
+      <!-- FACE: one .scene per face segment; the wrapper (.zoom) is untimed, the <video> inside is the timed clip.
+      <div class="scene" style="z-index:1"><div class="zoom" id="z01"><video id="v01" class="clip" data-start="0" data-duration="3.2" data-track-index="0" src="assets/v/seg01.mp4" muted playsinline></video></div></div>
+      -->
+
+      <!-- VISUALS: one timed .scene per beat visual: class="clip", data-start, data-duration,
+           data-visual="<what this design is>" ("icon-pair", "repo-push", "drive-tree"...: the review catches the same one twice in a row)
+           data-layout="face|split|full" (full = the visual owns the frame; the review checks it is big and well placed). -->
+
+      <!-- CAPTIONS:START (written by scripts/captions.py inject) -->
+      <!-- CAPTIONS:END -->
+
+      <audio id="mix" class="clip" data-start="0" data-duration="__DURATION__" data-track-index="9" data-volume="1" src="assets/mix.wav"></audio>
+    </div>
+
+    <script src="assets/style.js"></script>
+    <script src="assets/kit.js"></script>
+    <script>
+      const { $ } = K;
+      // ---- beat by beat, at absolute reel seconds (times come from words.json) ----
+
+      K.captions();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = K.done(__DURATION__);
+    </script>
+  </body>
+</html>

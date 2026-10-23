@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<!-- One storyboard still: the beat's key moment, 1080x1920, real footage underneath + the planned visual on top.
+     Copy to WORK/storyboard/src/<beat>.html, design the visual, then: python3 scripts/shoot.py html <this> ../frames/<beat>.jpg
+     Uses the same style.css + kit.css as the edit (made by: python3 scripts/style.py project <style> WORK/storyboard). -->
+<link rel="stylesheet" href="../assets/style.css" />
+<link rel="stylesheet" href="../assets/kit.css" />
+<style>
+  /* the footage frame (shoot.py frame <clip> <t> ../assets/footage/<beat>.jpg) */
+  .face-full { position: absolute; inset: 0; background: center / cover no-repeat; }
+  .face-bottom { position: absolute; left: 0; top: 960px; width: 1080px; height: 960px; overflow: hidden; }
+  .face-bottom img { position: absolute; left: 0; top: -560px; width: 1080px; }
+</style></head>
+<body><div id="root">
+  <!-- face beat:  <div class="face-full" style="background-image:url(../assets/footage/b2.jpg); transform: scale(1.2); transform-origin: 50% 32%"></div> -->
+  <!-- split beat: <div class="half-top" style="background: var(--bg)"> ...visual... </div>
+                   <div class="face-bottom"><img src="../assets/footage/l2.jpg" alt=""></div> -->
+  <!-- captions:   <div class="cap plain" style="top: 300px"><span class="t">so much <b>money</b></span></div> -->
+</div></body></html>

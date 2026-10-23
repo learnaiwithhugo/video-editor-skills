@@ -1,0 +1,44 @@
+/* edit-my-video base styles. Colours, font and caption shadow come from assets/style.css (made from the style
+   folder). Layout classes are starting points: size and place every visual for its beat. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg);
+  font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+.layer, .scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; }
+.abs { position: absolute; }
+.bg-main { background: var(--bg); }
+.bg-accent { background: var(--accent); }
+.bg-wash { background: var(--wash); }
+
+/* face footage: the wrapper zooms, the <video> inside is the timed clip */
+.zoom { position: absolute; inset: 0; }
+.zoom video { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+.half-top { position: absolute; left: 0; top: 0; width: 1080px; height: 960px; overflow: hidden; }
+.half-bottom { position: absolute; left: 0; top: 960px; width: 1080px; height: 960px; overflow: hidden; }
+
+/* real things: app icons, screenshots, cards */
+.icon { position: absolute; display: block; filter: drop-shadow(0 18px 30px rgba(16, 32, 58, .26)) drop-shadow(0 3px 6px rgba(16, 32, 58, .12)); }
+.card { position: absolute; background: #fff; border-radius: 40px; box-shadow: 0 30px 60px rgba(16, 32, 58, .16), 0 4px 12px rgba(16, 32, 58, .08); overflow: hidden; }
+.shot { position: absolute; display: block; }
+.pill { display: inline-block; background: var(--accent); color: #fff; font-weight: 700; border-radius: 999px; padding: 16px 40px 18px; white-space: nowrap; letter-spacing: -.01em; }
+.label { position: absolute; text-align: center; font-weight: 500; color: var(--text); white-space: nowrap; }
+
+/* captions: one host, one .cap clip per 2-3 word chunk; the inner .t is what animates */
+.cap { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; pointer-events: none; }
+.cap .t { display: inline-block; white-space: nowrap; font-weight: 600; letter-spacing: -.02em; line-height: 1.05; }
+.cap.plain .t { font-size: var(--cap-size); color: #fff; text-shadow: var(--cap-shadow); }
+.cap.box .t { font-size: 70px; color: #fff; padding: 20px 36px 24px; border-radius: 24px; background: var(--accent); }
+.cap.frost .t { font-size: 70px; color: #fff; padding: 20px 36px 24px; border-radius: 24px; background: var(--frost);
+  backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); border: 1.5px solid rgba(255, 255, 255, .35); }
+.cap.ink .t { font-size: var(--cap-size); color: var(--text); }
+.cap b { color: var(--accent); font-weight: inherit; }
+.cap .dim { opacity: .72; font-weight: 500; }
+
+/* intro / accent text */
+.intro { position: absolute; left: 0; width: 1080px; text-align: center; font-weight: 700; line-height: 1; white-space: nowrap; color: #fff; text-shadow: var(--cap-shadow); }
+.intro.ink { color: var(--text); text-shadow: 0 2px 14px rgba(255, 255, 255, .55); }
+.intro .w, .w { display: inline-block; white-space: pre; }
+.hero { display: inline-block; position: relative; color: var(--accent); letter-spacing: -.045em; text-shadow: none; filter: drop-shadow(0 6px 12px rgba(16, 32, 58, .22)); }
+.hero * { text-shadow: none; }  /* a text-shadow under see-through shine text turns the colour muddy */
+.hero .shine-word { -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero .shine-glow { position: absolute; inset: 0; -webkit-background-clip: text; background-clip: text; color: transparent; mix-blend-mode: screen; pointer-events: none; }

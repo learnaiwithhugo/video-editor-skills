@@ -1,0 +1,39 @@
+[
+  {"name": "Default captions", "code": "C", "options": [["cap-soft-fade"], ["cap-word-fade"], ["cap-cut"]]},
+  {"name": "Accent text", "code": "A", "options": [["accent-clean-rise"], ["accent-blur-rise"]]},
+  {"name": "Intro text", "code": "K", "options": [["intro-shine"], ["intro-focus"]]},
+  {"name": "Zooms on your face", "code": "Z", "options": [["zoom-long-out"], ["zoom-quick-punch"], ["zoom-hard-punch"]]},
+  {"name": "Diagrams", "code": "D", "options": [
+    ["tree", {"entrance": "fade", "bg": "accent"}, "Tree with your videos, fade in"],
+    ["tree", {"entrance": "rise"}, "Tree with your videos, clean rise"],
+    ["tree", {"entrance": "blur", "bg": "paper"}, "Tree with your videos, blur rise, on white"],
+    ["mindmap", {"entrance": "fade", "bg": "paper"}, "Mind map, fade in"],
+    ["mindmap", {"entrance": "rise", "bg": "accent"}, "Mind map, clean rise, on your colour"],
+    ["mindmap", {"entrance": "blur"}, "Mind map, blur rise"]]},
+  {"name": "Split-screen diagrams", "code": "G", "options": [
+    ["split-fanout", {"bg": "accent"}, "Fan out and merge, on your colour"],
+    ["split-hub", {"bg": "paper"}, "Plugged into your apps, on white"]]},
+  {"name": "Logos", "code": "L", "options": [["logos-tilt"], ["logos-row"]]},
+  {"name": "Split screen", "code": "S", "options": [
+    ["split-scroll"],
+    ["split-push", {"bg": "accent"}, "Fast push-in to the key detail"],
+    ["split-ring", {"bg": "paper"}, "Card on white, ring on the key detail"],
+    ["split-ring", {"bg": "accent"}, "Card on your colour, ring on the key detail"]]},
+  {"name": "Tool talk", "code": "T", "options": [
+    ["tool-box", {"box": "frosted"}, "Frosted glass box in your colour"],
+    ["tool-box", {"box": "solid"}, "Solid box in your colour"]]},
+  {"name": "Switching modes", "code": "M", "options": [
+    ["modes", {"slide": true}, "Hard cuts, one slide into full screen"],
+    ["modes", {"slide": false}, "Hard cuts everywhere"]]},
+  {"name": "Caption placement", "code": "P", "options": [
+    ["place", {"top": 1420, "size": 84}, "Low, 84px"],
+    ["place", {"top": 1240, "size": 84}, "Under the chin, 84px"],
+    ["place", {"top": 1240, "size": 100}, "Under the chin, 100px"],
+    ["place", {"top": 1330, "size": 92}, "Chest height, 92px"]]},
+  {"name": "White text drop shadows", "code": "H", "options": [
+    ["shadow", {"css": "0 2px 6px rgba(0,0,0,.45)"}, "Soft and tight"],
+    ["shadow", {"css": "0 4px 24px rgba(0,0,0,.5)"}, "Soft and wide"],
+    ["shadow", {"css": "0 1px 2px rgba(0,0,0,.55), 0 6px 22px rgba(0,0,0,.38)"}, "Crisp edge plus soft spread"],
+    ["shadow", {"css": "0 0 16px rgba(0,0,0,.55), 0 0 4px rgba(0,0,0,.35)"}, "Halo all round"],
+    ["shadow", {"css": "0 1px 3px rgba(0,0,0,.6), 0 4px 14px rgba(0,0,0,.5), 0 10px 40px rgba(0,0,0,.45)"}, "Stronger, for bright screens"]]}
+]
