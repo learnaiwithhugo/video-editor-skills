@@ -5,8 +5,9 @@ still in play: drops leave the page for good, keeps stay, maybes stay until they
 Usage (STYLE = the style folder):
   make_round.py STYLE fonts "Switzer" "General Sans" "Geist" "Instrument Sans" "Helvetica Neue"
       A font round: the same line with the same clean rise in each font (fonts are downloaded locally).
-  make_round.py STYLE first
-      Round 1: the whole animation library, already in their colours and font.
+  make_round.py STYLE first [--skip "Real images" "Tool talk" ...]
+      Round 1: the whole animation library, already in their colours and font, minus any section they
+      said they don't need (e.g. no real photos, or they never talk about websites or tools).
   make_round.py STYLE next
       Reads reviews/latest.json and starts the next round: Drops are removed (kept on record in
       round.json "dropped" and STYLE.md's rejected list), Keeps stay and are recorded in locked/kept.json,
@@ -89,16 +90,20 @@ class Round:
             shutil.copy2(self.path, d / f"round-{self.r['round']}.json")
 
 
-def first(style):
+def first(style, skip=()):
+    skip = {x.lower() for x in skip}
     R = Round(style)
     R.archive()
     R.r = {"round": 1, "sections": [], "dropped": R.r.get("dropped", [])}
     for sec in json.loads((SK / "engine" / "first-round.json").read_text()):
+        if sec["name"].lower() in skip:
+            continue
         for item in sec["options"]:
             use, params, label = (item + [None, None])[:3]
             R.add(sec["name"], use, params, label, sec["code"])
     R.save()
-    print(f"Round 1 written: {len(R.options())} options in {len(R.r['sections'])} sections.")
+    print(f"Round 1 written: {len(R.options())} options in {len(R.r['sections'])} sections."
+          + (f" Left out: {', '.join(sorted(skip))}." if skip else ""))
 
 
 def fonts(style, names):
@@ -183,7 +188,7 @@ def main():
         raise SystemExit(__doc__)
     style, cmd, rest = Path(os.path.expanduser(a[0])).resolve(), a[1], a[2:]
     if cmd == "first":
-        first(style)
+        first(style, rest[rest.index("--skip") + 1:] if "--skip" in rest else ())
     elif cmd == "fonts":
         fonts(style, rest)
     elif cmd == "next":

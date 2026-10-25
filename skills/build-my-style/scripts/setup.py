@@ -25,17 +25,17 @@ from pathlib import Path
 SK = Path(__file__).resolve().parent.parent
 ENGINE = SK / "engine"
 CONFIG = SK / "config.json"
-PIN = "0.8.186"   # same HyperFrames version edit-my-video uses
+PIN = "0.8.185"   # same HyperFrames version the editing skills use
 ENV = dict(os.environ, HYPERFRAMES_SKIP_SKILLS="1", HYPERFRAMES_NO_TELEMETRY="1")
 ok = True
 # Engine files that get refreshed on --init. Everything else in page/ belongs to the person.
-ENGINE_FILES = ["library.js", "app.js", "boot.js", "style.css", "index.html", "shine.html", "zoom.html", "shadow.html", "sfx.html"]
+ENGINE_FILES = ["library.js", "app.js", "boot.js", "style.css", "index.html", "shine.html", "zoom.html", "shadow.html", "text.html", "sfx.html", "images.html", "creators.html"]
 
 
 def say(good, msg, fix="", optional=False):
-    """optional = nice to have: it shows up as LATER and never makes the check say NOT READY."""
+    """One row of the table. An optional tool that's missing is shown but never makes the result NOT READY."""
     global ok
-    print(("  OK       " if good else ("  LATER    " if optional else "  MISSING  ")) + msg + ("" if good else f"\n           fix: {fix}"))
+    print(("  OK       " if good else "  LATER    " if optional else "  MISSING  ") + msg + ("" if good else f"\n           fix: {fix}"))
     ok = ok and (good or optional)
 
 
@@ -81,6 +81,11 @@ def check():
     chrome = find_chrome()
     say(bool(chrome), "A Chrome browser (takes real website screenshots)",
         "install Google Chrome from https://www.google.com/chrome, or say yes when I offer to install HyperFrames")
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from make_assets import cutout_tools   # the same test the cut-out step itself runs
+    can_cut, why = cutout_tools()
+    say(can_cut, "Head cut-out tools (lets words sit behind your head; the style works without it)", why, optional=True)
     hv = out(["npx", "--no-install", f"hyperframes@{PIN}", "--version"], timeout=60, env=ENV) if shutil.which("npx") else ""
     say(hv == PIN, f"HyperFrames {PIN} (renders your edits later, not needed to build the style)",
         "I can install it for you (one command, about 2 minutes). Just say yes.", optional=True)
@@ -96,7 +101,8 @@ def check():
 def init(style):
     style = Path(os.path.expanduser(style)).resolve()
     made = not style.exists()
-    for sub in ["locked/old", "sfx/old", "reviews", "references/analysis", "page/assets/icons", "page/rounds"]:
+    for sub in ["locked/old", "sfx/old", "reviews", "references/analysis", "page/assets/icons", "page/assets/photos", "page/rounds",
+                "images/liked", "images/disliked", "notes"]:
         (style / sub).mkdir(parents=True, exist_ok=True)
     for f in ENGINE_FILES:   # refresh the engine, keep the person's own files
         shutil.copy2(ENGINE / "page" / f, style / "page" / f)
@@ -105,11 +111,15 @@ def init(style):
     shutil.copy2(ENGINE / "serve.py", style / "serve.py")
     if not (style / "sfx" / "sfx.json").exists():
         (style / "sfx" / "sfx.json").write_text("[]\n")
+    words = style / "notes" / "their-words.md"
+    if not words.exists():   # everything they say they like or hate, word for word, dated (STYLE.md only gets what's decided)
+        words.write_text("# In your own words\n\nEverything you've said you like or don't like, word for word.\n")
     config(styleDir=str(style))
     print(f"{'Made' if made else 'Refreshed'} your style folder: {style}")
     for sub, what in [("STYLE.md", "your style guide (written as we go)"), ("locked/", "settings you lock"),
                       ("sfx/", "your sound effects"), ("page/", "the style page"), ("reviews/", "your Keep / Maybe / Drop marks"),
-                      ("references/", "videos you love and what we learned from them")]:
+                      ("references/", "videos you love and what we learned from them"),
+                      ("images/", "photos you like and don't (your image taste)"), ("notes/", "what you've told me, word for word")]:
         print(f"  {sub:13} {what}")
 
 

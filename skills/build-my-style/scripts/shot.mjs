@@ -36,7 +36,7 @@ function findChrome() {
 const chrome = findChrome();
 if (!chrome) { console.error("No Chrome found. Install Google Chrome, or HyperFrames (it brings its own)."); process.exit(3); }
 const profile = mkdtempSync(join(tmpdir(), "style-shot-"));
-const proc = spawn(chrome, ["--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`, "--no-first-run", "--no-default-browser-check",
+const proc = spawn(chrome, ["--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`, "--no-first-run", "--no-default-browser-check", "--use-mock-keychain", "--password-store=basic",
   "--hide-scrollbars", "--mute-audio", "--autoplay-policy=no-user-gesture-required", "--disable-background-timer-throttling", "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
 const cleanup = () => { try { proc.kill("SIGKILL"); } catch {} try { rmSync(profile, { recursive: true, force: true }); } catch {} };
 const fail = (m) => { console.error(m); cleanup(); process.exit(1); };

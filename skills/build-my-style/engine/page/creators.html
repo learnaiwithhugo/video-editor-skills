@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Creators</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  main { max-width: 1240px; margin: 0 auto; padding: 8px 20px 80px; }
+  .who { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 36px 0 6px; }
+  .who h2 { margin: 0; font-size: 24px; letter-spacing: -.01em; }
+  .who a { color: var(--accent-deep); font-size: 15px; font-weight: 600; text-decoration: none; }
+  .fav { font-size: 12px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 999px; padding: 3px 10px; }
+  .took { margin: 0 0 16px; color: var(--muted, #667); font-size: 15px; }
+  .reels { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .reel { background: #fff; border: 1px solid var(--line, #E3E6EA); border-radius: 14px; overflow: hidden; }
+  .reel video { width: 100%; aspect-ratio: 9 / 16; display: block; background: var(--ink); object-fit: contain; }
+  .reel .cap { padding: 10px 12px; font-size: 14px; display: flex; justify-content: space-between; gap: 8px; }
+  .reel .cap a { color: var(--accent-deep); font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .empty { color: var(--muted, #667); margin-top: 40px; }
+  .back { color: var(--muted, #667); text-decoration: none; font-size: 14px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <h1>Creators</h1>
+    <a class="back" href="/">← Style Studio</a>
+  </div>
+</header>
+<main id="main"></main>
+<div class="toast" id="toast" hidden></div>
+<script src="boot.js"></script>
+<script>
+// Every creator whose reels shaped this style (creators.json in the style folder, written by creators.py),
+// each reference reel playable right here plus a link back to the original post.
+(async () => {
+  try { await window.boot; } catch {}
+  const data = await getJSON("/creators.json", { creators: [] });
+  const esc = s => String(s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const link = c => c.url || (c.handle ? `https://www.instagram.com/${c.handle.replace(/^@/, "")}/` : "");
+  const main = document.getElementById("main");
+  if (!data.creators.length) { main.innerHTML = `<p class="empty">No creators yet.</p>`; return; }
+  main.innerHTML = data.creators.map(c => `
+    <section>
+      <div class="who"><h2>${esc(c.name)}</h2>${link(c) ? `<a href="${esc(link(c))}" target="_blank" rel="noopener">${c.handle ? "@" + esc(c.handle.replace(/^@/, "")) : "Profile"} ↗</a>` : ""}${c.fav ? '<span class="fav">Favourite</span>' : ""}</div>
+      ${c.took ? `<p class="took">${esc(c.took)}</p>` : ""}
+      <div class="reels">${(c.reels || []).map(r => `
+        <div class="reel"><video controls playsinline preload="metadata" src="/refs/${encodeURI(r.file)}#t=0.5"></video>
+          <div class="cap"><span>${esc(r.title)}</span>${r.link ? `<a href="${esc(r.link)}" target="_blank" rel="noopener">Original ↗</a>` : ""}</div></div>`).join("")}
+      </div>
+    </section>`).join("");
+})();
+</script>
+</body>
+</html>

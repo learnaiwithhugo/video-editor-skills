@@ -1,8 +1,32 @@
 [
-  {"name": "Default captions", "code": "C", "options": [["cap-soft-fade"], ["cap-word-fade"], ["cap-cut"]]},
-  {"name": "Accent text", "code": "A", "options": [["accent-clean-rise"], ["accent-blur-rise"]]},
-  {"name": "Intro text", "code": "K", "options": [["intro-shine"], ["intro-focus"]]},
-  {"name": "Zooms on your face", "code": "Z", "options": [["zoom-long-out"], ["zoom-quick-punch"], ["zoom-hard-punch"]]},
+  {"name": "Default captions", "code": "C", "options": [
+    ["cap-soft-fade"],
+    ["cap-word-fade"],
+    ["cap-cut"]]},
+  {"name": "Accent text", "code": "A", "options": [
+    ["accent-clean-rise"],
+    ["accent-blur-rise"]]},
+  {"name": "Headline: white on top, accent underneath", "code": "W", "options": [
+    ["headline-stack", {"rise": "blur"}, "Two lines, accent line bigger, blur rise"],
+    ["headline-stack", {"rise": "blur", "three": true}, "Three lines, big middle, accent last line"],
+    ["headline-stack", {"rise": "clean"}, "Two lines, clean rise instead of blur"]]},
+  {"name": "Text behind your head", "code": "B", "options": [
+    ["behind-headline", {}, "Big headline behind your head"],
+    ["behind-stack", {}, "White on top, accent underneath, behind your head"],
+    ["hook-behind-head", {}, "Hook: title behind your head with your real app icon"]]},
+  {"name": "Intro text", "code": "K", "options": [
+    ["intro-shine"],
+    ["intro-focus"]]},
+  {"name": "Text fades", "code": "X", "options": [
+    ["text-fade", {"from": "ink", "to": "paper"}, "Ink melting into your paper"],
+    ["text-fade", {"from": "ink", "to": "accent", "start": 40}, "Ink melting into your accent"],
+    ["text-fade", {"from": "deep", "to": "paper"}, "Deep colour melting into your paper"]]},
+  {"name": "CTA", "code": "CT", "options": [
+    ["cta-keyword", {"keyword": "STYLE"}, "Quoted keyword over your face"]]},
+  {"name": "Zooms on your face", "code": "Z", "options": [
+    ["zoom-long-out"],
+    ["zoom-quick-punch"],
+    ["zoom-hard-punch"]]},
   {"name": "Diagrams", "code": "D", "options": [
     ["tree", {"entrance": "fade", "bg": "accent"}, "Tree with your videos, fade in"],
     ["tree", {"entrance": "rise"}, "Tree with your videos, clean rise"],
@@ -13,7 +37,16 @@
   {"name": "Split-screen diagrams", "code": "G", "options": [
     ["split-fanout", {"bg": "accent"}, "Fan out and merge, on your colour"],
     ["split-hub", {"bg": "paper"}, "Plugged into your apps, on white"]]},
-  {"name": "Logos", "code": "L", "options": [["logos-tilt"], ["logos-row"]]},
+  {"name": "Clean explainers", "code": "E", "options": [
+    ["explain-layers", {}, "Concept card, three layers light up, cut to a split"],
+    ["explain-path", {}, "Your first app looks around, then a winding road to the goal"],
+    ["explain-tool", {}, "Tool intro: your real app icon, its name, then what it does"]]},
+  {"name": "Logos", "code": "L", "options": [
+    ["logos-tilt"],
+    ["logos-row"]]},
+  {"name": "Real images", "code": "R", "options": [
+    ["photos-flash", {}, "Photos flash above your head, hard cuts"],
+    ["hook-logos-photo", {}, "Hook: real logos and a real photo over the title"]]},
   {"name": "Split screen", "code": "S", "options": [
     ["split-scroll"],
     ["split-push", {"bg": "accent"}, "Fast push-in to the key detail"],

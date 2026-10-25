@@ -56,6 +56,10 @@ def labs_block(style):
     if s:
         out.append(f"- **Caption shadow** (`locked/shadow.json`): `text-shadow: {s['text_shadow']}` on a {s.get('frame_width', 1080)}-wide frame "
                    f"(scale the px values for other widths), captions at {s.get('size')}px. Every plain white caption uses exactly this.")
+    t = load(style / "locked" / "text_fade.json")
+    if t and t.get("background_image"):
+        out.append(f"- **Faded titles** (`locked/text_fade.json`): text filled with `{t['background_image']}` (background-clip: text, "
+                   f"transparent colour), {t.get('weight', 700)} weight, {t.get('size', '')}px on a {t.get('frame_width', 1080)}-wide frame. Every faded title uses exactly this.")
     return "\n".join(out) or "_Nothing locked in the labs yet._"
 
 

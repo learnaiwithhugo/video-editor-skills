@@ -4,13 +4,15 @@ Build your own video editing style, then let Claude edit your raw talking-head c
 
 ## The two main skills
 
-**1. /build-my-style** makes your editing style on a page in your browser.
+**1. /build-my-style** makes your editing style on a page in your browser. You don't need to know the steps: it takes you through everything, one question at a time.
 
-- Tell it your colours, your font, and a few reels you love. It breaks those reels down frame by frame to learn the timing and pacing (never copying their look).
-- Your page fills with real animations in your own brand: captions, intro text, zooms on your face, diagrams, logos, split screens. Mark each one **Keep**, **Maybe** or **Drop**, add a note like "slower" or "bigger", and press Submit. Each round only shows what's still in play.
-- Fine-tune the details in the **Shine**, **Zoom** and **Shadow** labs and press Lock when it looks right.
+- **Starting from scratch or already have a brand?** Either works. Paste your website and it reads your colours and font straight off it, or it suggests a few palettes and fonts and you just pick.
+- **Send a few reels you love.** It breaks them down frame by frame to learn the timing, motion and pacing. If one moment really stands out, it pulls every frame so you can point at it ("frames 7 to 16") and it rebuilds that exact moment in your brand. Every creator you learn from gets listed on a Creators page with their reels playable.
+- **Your page fills with real animations, in your colours, on your own face:** captions, accent and intro text, **text behind your head** (it cuts you out of your own clip so the words sit behind you), white-and-accent headlines, clean explainers (titles that fade in, real logo tiles, the camera gliding as each piece arrives), zooms, diagrams, logos, split screens. Mark each one **Keep**, **Maybe** or **Drop**, add a note like "slower" or "bigger", and press Submit. Each round only shows what's still in play.
+- **Real photos, if you want them.** It asks first. If yes, it pulls aesthetic photos for your niche (Pinterest and Cosmos), you click Like or Nope, and your likes become your image taste. Built-in rules: no stock photos, nothing AI-looking, square corners, and photos don't zoom.
+- Fine-tune the details in the **Shine**, **Zoom**, **Shadow** and **Text** labs and press Lock when it looks right.
 - Pick your sound effects by ear on the Sounds page.
-- You end up with a style folder (a plain-English `STYLE.md` plus your locked settings) that /edit-my-video reads.
+- Everything you say you like or hate is written down word for word as you go. At the end you pick what's final, and that becomes your plain-English `STYLE.md` plus your locked settings, which /edit-my-video reads.
 
 **2. /edit-my-video** edits your raw clips in that style.
 
@@ -74,6 +76,7 @@ Don't change the user's settings or install anything else. Each skill's own setu
 - About 8 GB of free space
 - Free tools: ffmpeg (cuts video and sound), Node.js (runs the renderer), Python (runs the helper scripts) and yt-dlp (downloads reels you want to learn from)
 - Google Chrome (for taking screenshots of real websites)
+- Optional: Apple's free developer tools (for text behind your head; the Mac offers to install them the first time, and the style works without them)
 
 On first run each skill checks your Mac, tells you what's missing in plain English, and asks before installing anything else itself: HyperFrames (the free video renderer), Whisper (hears every word so it can pick takes and write captions) and a few small Python helpers. Those go in their own folder (`~/.claude-video-editor`), never into the Mac's own Python.
 
@@ -86,12 +89,12 @@ On first run each skill checks your Mac, tells you what's missing in plain Engli
 
 ## Nothing third-party is bundled
 
-Your font is downloaded from Fontshare or Google Fonts on your Mac. Sound effects come from your own library or are downloaded on your Mac from free, no-credit-needed sites. App icons are taken from the apps already on your Mac. Your own face clip is used for the previews. None of it is included in this repo.
+Your font is downloaded from Fontshare or Google Fonts on your Mac. Sound effects come from your own library or are downloaded on your Mac from free, no-credit-needed sites. App icons are taken from the apps already on your Mac. Your own face clip is used for the previews. Photos (only if you want them) are searched on your Mac, logged out, from Pinterest and Cosmos, for use in your own edits; Pinterest is an unofficial route, so don't redistribute them. None of it is included in this repo.
 
 ## Where things live
 
 - The skills: `~/.claude/skills/` (`build-my-style`, `edit-my-video`, `kallaway-edit`, `new-edit-style`)
-- Your style: the folder you pick (suggested: `~/edit-style`)
+- Your style: the folder you pick (suggested: `~/edit-style`). Inside: `STYLE.md`, your locked settings, sounds, liked and rejected photos (`images/`), your own words (`notes/`) and the creators you learn from
 - Your edits: the folder you pick on the first /edit-my-video run (one folder per video)
 
 ## Extras: two more skills

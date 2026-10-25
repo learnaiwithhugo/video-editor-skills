@@ -16,6 +16,9 @@ best fit, and mix things up across a video. (The first test edit made with a gui
 When the person gives a note on an edit ("I don't like X"), write it in here as a dated rule or into
 Rejected, so the next edit already knows.
 
+**Only finished decisions live here.** Everything the person says along the way is kept word for word in
+`notes/their-words.md`; a section here gets written once they've said it's how they want it.
+
 ## Ground rules
 
 Starting rules every style begins with. Delete any the person reverses.
@@ -30,7 +33,10 @@ Starting rules every style begins with. Delete any the person reverses.
 - Intro text has room to breathe. Never cramped lines.
 - Sound effects are barely noticeable. If you can clearly hear one, it's too loud.
 - Text stays inside Instagram's safe zone (below).
-- Copy what reference reels DO (timing, motion, layout), never what they literally show.
+- Copy what reference reels DO (timing, motion, layout), never what they literally show, unless the person
+  asks for a part to be copied exactly (then rebuild it near-exactly, in their brand only).
+- Images: square corners, never rounded. No bubble or tile around a photo. No stock photos, nothing
+  AI-looking. No zooming on images: on screen, sit still, hard cut. Zoom only when there's a reason.
 
 ## Locked
 
@@ -43,6 +49,14 @@ Starting rules every style begins with. Delete any the person reverses.
 - **Accent text (now and then):** _Not decided yet._
 - **Intro text (hooks, sometimes):** _Not decided yet._
 
+## Headlines and text behind the head
+
+- **Text behind the head (now and then):** _Not decided yet._ (Footage, then the words, then the person cut
+  out of the same footage on top, so their head sits in front of the words. Cut-out files:
+  `page/assets/face-cutout.webm` / `.mov`.)
+- **Headline, white on top, accent underneath:** _Not decided yet._
+- **Text fades:** _Not decided yet. Tune it in the Text Lab._
+
 ## White text drop shadow
 
 _Not decided yet. Tune it in the Shadow Lab._
@@ -54,6 +68,19 @@ _Not decided yet._
 ## Diagrams
 
 _Not decided yet._
+
+## Explainers
+
+_Not decided yet._ (Clean system explainers: words ghost in, real logo tiles, the camera glides as pieces
+arrive, hard cuts between full screen and split, everything floats gently once it lands.)
+
+## Images
+
+Their own taste, from the Images page (`images/liked/`, `images/disliked/`, reasons in the file names).
+Where they come from: Pinterest first, Cosmos when a photo goes full screen (sharper). Logos from a web
+search (the real logo).
+
+_Their image taste isn't decided yet._
 
 ## Logos
 
@@ -109,6 +136,10 @@ Never bring these back.
 
 <!-- auto:rejected -->
 <!-- /auto:rejected -->
+
+## Creators we take from
+
+The full list with every reel playable: `creators.json` and the Creators page. _None yet._
 
 ## Notes from rounds
 
