@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """The Images round: find real photos the person might love, look at them, keep or drop them, and hand
-the keepers to the animations. Needs the free Python packages "requests" and "Pillow".
+the keepers to the animations. Searching, sheets, use and recreate need the free Python packages "requests" and "Pillow" (pick and index don't).
 
 Usage (always python3 -I, quote every path):
   python3 -I images.py search "<style folder>" "<query>" ["<query>" ...] [--n 8] [--only pinterest|cosmos]
@@ -32,17 +32,28 @@ import json
 import re
 import shutil
 import sys
+import threading
 import time
 import urllib.parse
 from datetime import datetime
 from pathlib import Path
 
+# requests and Pillow are only needed to search, make sheets and show photos. Recording a Like / Nope
+# (pick_image below) is plain standard library, so serve.py and pull_review.py can import this file without them.
 try:
     import requests
     from PIL import Image, ImageDraw, ImageFont, ImageOps
+    HAVE_PACKAGES = True
 except ImportError:
-    raise SystemExit("This needs two free Python packages: requests and Pillow. Ask Claude to install them "
-                     "(pip3 install requests pillow), then run it again.")
+    requests = Image = ImageDraw = ImageFont = ImageOps = None
+    HAVE_PACKAGES = False
+
+
+def need_packages():
+    if not HAVE_PACKAGES:
+        raise SystemExit("This needs two free Python packages: requests and Pillow. Ask Claude to install them "
+                         "(pip3 install requests pillow), then run it again.")
+
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 MIN_LONG = 700      # shortest allowed "long side" in pixels
@@ -280,6 +291,7 @@ def search_one(images, query, n, only):
 
 
 def cmd_search(a):
+    need_packages()
     images = images_dir(a.style)
     for q in a.queries:
         slug, counts = search_one(images, q, a.n, a.only)
@@ -366,6 +378,7 @@ def make_sheet(images, slug):
 
 
 def cmd_sheet(a):
+    need_packages()
     images = images_dir(a.style)
     if a.slug:
         slugs = [slugify(a.slug)]
@@ -377,7 +390,7 @@ def cmd_sheet(a):
         print(make_sheet(images, s))
 
 
-# ---------------------------------------------------------------- picks (the same logic lives in engine/serve.py for the page's buttons)
+# ---------------------------------------------------------------- picks (pick_image is shared with engine/serve.py and pull_review.py)
 def rebuild_index(images):
     """images/index.json = {liked, disliked, recreate}, rebuilt from the folders. Marks come from picks.json."""
     picks = {p["file"]: p for p in read_json(images / "picks.json", {"picks": []}).get("picks", [])}
@@ -406,33 +419,66 @@ def rebuild_index(images):
     return out
 
 
-def apply_pick(images, slug, cid, verdict, reason=""):
-    """verdict: 'like', 'dislike' or None (take the mark back). Returns a short plain-English line."""
-    cid = norm_id(cid)
+class PickError(Exception):
+    """A Like / Nope that can't be applied. .code is the HTTP-style status (400 bad request, 404 no such picture)."""
+
+    def __init__(self, message, code=400):
+        super().__init__(message)
+        self.code = code
+
+
+PICK_LOCK = threading.Lock()
+
+
+def pick_image(images, slug, cid, verdict, reason=""):
+    """The ONE place a Like / Nope / clear is applied. The page's old buttons (engine/serve.py), a submitted review
+    (pull_review.py) and `images.py pick` all call this, so they can't drift apart.
+    images = the style folder's images/ folder. verdict: 'like', 'dislike' or None (take the mark back).
+    Files go to images/liked or images/disliked, the mark to images/picks.json, the lists to images/index.json.
+    Returns {"saved": True, "verdict", "liked": n, "disliked": n}. Raises PickError."""
+    images = Path(images)
+    slug = str(slug or "")
+    m = re.fullmatch(r"([pc])0*(\d{1,3})", str(cid or "").strip().lower())
+    if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", slug) or not m or verdict not in ("like", "dislike", None):
+        raise PickError("bad request", 400)
+    cid = f"{m.group(1)}{int(m.group(2))}"
     src = cand_path(images, slug, cid)
-    if not src.exists():
-        raise SystemExit(f"There is no {cid} in '{slug}'. Check the number on the sheet.")
-    data = read_json(images / "picks.json", {"picks": []})
-    mine = [p for p in data["picks"] if p["slug"] == slug and p["id"] == cid]
-    for p in mine:
-        old = images / p.get("file", "")
-        if p.get("file") and old.is_file():
-            archive(old, images)
-    data["picks"] = [p for p in data["picks"] if p not in mine]
-    reason = (reason or "").strip()[:200]
-    if verdict in ("like", "dislike"):
-        folder = "liked" if verdict == "like" else "disliked"
-        rs = slugify(reason, 40) if verdict == "dislike" else ""
-        name = f"{slug}-{cid}" + (f"-{rs}" if rs else "") + ".jpg"
-        dest = images / folder / name
-        dest.parent.mkdir(exist_ok=True)
-        if dest.exists():
-            archive(dest, images)
-        shutil.copy2(src, dest)
-        data["picks"].append({"slug": slug, "id": cid, "verdict": verdict, "reason": reason,
-                              "file": f"{folder}/{name}", "at": datetime.now().isoformat(timespec="seconds")})
-    write_json(images / "picks.json", data)
-    rebuild_index(images)
+    if not src.is_file():
+        raise PickError(f"no picture {cid} in {slug}", 404)
+    reason = str(reason or "").strip()[:200]
+    with PICK_LOCK:
+        data = read_json(images / "picks.json", {"picks": []})
+        mine = [p for p in data["picks"] if p["slug"] == slug and p["id"] == cid]
+        for p in mine:
+            old = images / p.get("file", "")
+            if p.get("file") and old.is_file():
+                archive(old, images)
+        data["picks"] = [p for p in data["picks"] if p not in mine]
+        if verdict:
+            folder = "liked" if verdict == "like" else "disliked"
+            rs = slugify(reason, 40) if verdict == "dislike" else ""
+            name = f"{slug}-{cid}" + (f"-{rs}" if rs else "") + ".jpg"
+            dest = images / folder / name
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            if dest.exists():
+                archive(dest, images)
+            shutil.copy2(src, dest)
+            data["picks"].append({"slug": slug, "id": cid, "verdict": verdict, "reason": reason,
+                                  "file": f"{folder}/{name}", "at": datetime.now().isoformat(timespec="seconds")})
+        write_json(images / "picks.json", data)
+        idx = rebuild_index(images)
+    return {"saved": True, "verdict": verdict, "liked": len(idx["liked"]), "disliked": len(idx["disliked"])}
+
+
+def apply_pick(images, slug, cid, verdict, reason=""):
+    """Command-line wrapper around pick_image: plain-English errors. verdict: 'like', 'dislike' or None."""
+    cid = norm_id(cid)
+    try:
+        pick_image(images, slug, cid, verdict, reason)
+    except PickError as e:
+        if e.code == 404:
+            raise SystemExit(f"There is no {cid} in '{slug}'. Check the number on the sheet.")
+        raise SystemExit(f"Can't record that pick ({e}).")
     return verdict or "clear"
 
 
@@ -459,6 +505,7 @@ def cmd_pick(a):
 
 # ---------------------------------------------------------------- use, index, recreate
 def cmd_use(a):
+    need_packages()
     images = images_dir(a.style)
     liked = images / "liked"
     names = [Path(n).name for n in a.names]
@@ -519,6 +566,7 @@ def resolve_match(images, token):
 
 
 def cmd_recreate(a):
+    need_packages()
     images = images_dir(a.style)
     name = slugify(a.name, 40) or "photo"
     original = Path(a.original).expanduser()

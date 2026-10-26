@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
+<title>StyleLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="head">
+  <div class="wrap">
+    <div class="example-banner" id="exampleBanner" hidden></div>
+    <h1 id="pageTitle">StyleLab</h1>
+    <p class="round-title" id="roundTitle" hidden></p>
+    <p class="intro" id="intro" hidden></p>
+    <div class="notes" id="notes" hidden>
+      <h2>Since last round</h2>
+      <ul id="notesList"></ul>
+    </div>
+    <section class="brand" id="brandBar" aria-label="Locked brand">
+      <div class="brand-head"><h2>Locked</h2></div>
+      <div class="brand-row">
+        <div class="swatches" id="swatches"></div>
+        <div class="fontcard"><span class="fontname" id="fontName"></span></div>
+      </div>
+    </section>
+  </div>
+</header>
+
+<nav class="bar" id="bar" aria-label="Review">
+  <div class="wrap bar-in">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="bar-row">
+      <div class="count" id="count" aria-live="polite"></div>
+      <div class="toggles">
+        <button type="button" class="tog" id="unratedBtn" aria-pressed="false">Unrated only</button>
+        <button type="button" class="tog" id="safeBtn" aria-pressed="false">Safe zones</button>
+      </div>
+    </div>
+  </div>
+  <div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
+  <p class="sync wrap" id="sync" role="status" hidden></p>
+</nav>
+
+<main class="wrap" id="main">
+  <section class="tab" id="tab-round" role="tabpanel" aria-label="Round">
+    <div id="roundBody"></div>
+    <div class="submitbox" id="roundSubmit">
+      <label for="overall">Anything across the whole round?</label>
+      <textarea id="overall" rows="3"></textarea>
+      <div class="submit-row">
+        <button type="button" class="primary" id="submitRound">Submit review</button>
+        <p class="status" id="statusRound" role="status"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-images" role="tabpanel" aria-label="Images" hidden>
+    <div id="imagesBody"></div>
+    <div class="submitbox">
+      <div class="submit-row">
+        <button type="button" class="primary" id="submitImages">Submit picks</button>
+        <p class="status" id="statusImages" role="status"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-sounds" role="tabpanel" aria-label="Sounds" hidden>
+    <div id="soundsBody"></div>
+    <div class="submitbox">
+      <div class="submit-row">
+        <button type="button" class="primary" id="submitSounds">Submit picks</button>
+        <p class="status" id="statusSounds" role="status"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-creators" role="tabpanel" aria-label="Creators" hidden>
+    <div id="creatorsBody"></div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-label="Full-size view">
+  <div class="modal-body">
+    <div class="modal-phone"><div class="stage-wrap"><div class="stage"></div></div></div>
+    <div class="controls"></div>
+  </div>
+  <button type="button" class="modal-close" id="modalClose" aria-label="Close"></button>
+</div>
+<div class="modal lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Picture">
+  <img id="lightboxImg" alt="">
+  <button type="button" class="modal-close" id="lightboxClose" aria-label="Close"></button>
+</div>
+
+<script src="library.js"></script>
+<script src="custom.js"></script>
+<script src="boot.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

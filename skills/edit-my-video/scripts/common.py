@@ -12,7 +12,7 @@ ENGINE = SK / "engine"
 CONFIG = SK / "config.json"
 PIN = "0.8.186"                                       # HyperFrames version the test edits rendered with
 HF_ENV = dict(os.environ, HYPERFRAMES_SKIP_SKILLS="1", HYPERFRAMES_NO_TELEMETRY="1")
-DEFAULT_STYLE = Path.home() / "edit-style"                # build-my-style suggests this folder too
+DEFAULT_STYLE = Path.home() / "edit-style"                # stylelab suggests this folder too
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 W, H, FPS = 1080, 1920, 30
 
@@ -47,19 +47,21 @@ def save_config(**changes):
 
 
 def built_style_dir():
-    """The style folder build-my-style remembered (it sits next to this skill), if there is one."""
-    try:
-        return json.loads((SK.parent / "build-my-style" / "config.json").read_text()).get("styleDir")
-    except (FileNotFoundError, ValueError):
-        return None
+    """The style folder stylelab remembered (it sits next to this skill), if there is one."""
+    for name in ("stylelab", "build-my-style"):  # build-my-style = its old name, for older installs
+        try:
+            return json.loads((SK.parent / name / "config.json").read_text()).get("styleDir")
+        except (FileNotFoundError, ValueError):
+            continue
+    return None
 
 
 def style_dir(arg=None):
-    """The style folder: the one passed in, else the one saved at setup, else the one build-my-style made,
+    """The style folder: the one passed in, else the one saved at setup, else the one stylelab made,
     else ~/edit-style."""
     p = Path(os.path.expanduser(arg)) if arg else Path(load_config().get("style_dir") or built_style_dir() or DEFAULT_STYLE)
     if not (p / "STYLE.md").exists():
-        sys.exit(f"No STYLE.md in {p}. Point me at a style folder made by build-my-style.")
+        sys.exit(f"No STYLE.md in {p}. Point me at a style folder made by stylelab.")
     return p.resolve()
 
 

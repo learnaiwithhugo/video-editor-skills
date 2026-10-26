@@ -1,0 +1,100 @@
+[
+  {"name": "Default captions", "code": "C", "use": "The everyday words on screen while you talk: how each 2-3 word chunk arrives.", "options": [
+    ["cap-soft-fade"],
+    ["cap-word-fade"],
+    ["cap-cut"],
+    ["cap-soft-fade", {"size": 100}, "Soft fade-up, big (100px)"]]},
+  {"name": "Accent text", "code": "A", "use": "A line that pops in your accent colour: how its words arrive.", "options": [
+    ["accent-clean-rise"],
+    ["accent-blur-rise"],
+    ["accent-clean-rise", {"gap": 90, "dur": 420}, "Clean rise, snappy: the words land fast"],
+    ["accent-clean-rise", {"gap": 400, "dur": 1300}, "Clean rise, slow and filmic"],
+    ["accent-clean-rise", {"size": 110}, "Clean rise, bigger (110px)"]]},
+  {"name": "Headline: white on top, accent underneath", "code": "W", "use": "A stacked headline with no box: white line(s) on top, a bigger line in your accent colour underneath.", "options": [
+    ["headline-stack", {"rise": "blur"}, "Two lines, accent line bigger, blur rise"],
+    ["headline-stack", {"rise": "blur", "three": true}, "Three lines, big middle, accent last line"],
+    ["headline-stack", {"rise": "clean"}, "Two lines, clean rise instead of blur"],
+    ["headline-stack", {"rise": "clean", "three": true}, "Three lines, big middle, clean rise"]]},
+  {"name": "Text behind your head", "code": "B", "use": "Big words that sit behind your head, so you look like you're standing in front of the title.", "options": [
+    ["behind-headline", {}, "Big headline behind your head"],
+    ["behind-stack", {}, "White on top, accent underneath, behind your head"],
+    ["hook-behind-head", {}, "Hook: title behind your head with your real app icon"],
+    ["behind-word", {}, "One huge white word behind your head"]]},
+  {"name": "Intro text", "code": "K", "use": "The opening hook: a small lead-in, one huge hero word, a last line gliding in.", "options": [
+    ["intro-shine"],
+    ["intro-focus"],
+    ["intro-shine", {"from": 1}, "Hero word shine, last line glides in from the right"],
+    ["intro-focus", {"heroColour": "text"}, "Hero word focus-in, in your caption colour"]]},
+  {"name": "Text fades", "code": "X", "use": "A title that is solid at the top of each line and melts away at the bottom.", "options": [
+    ["text-fade", {"from": "ink", "to": "paper"}, "Ink melting into your paper"],
+    ["text-fade", {"from": "ink", "to": "accent", "start": 40}, "Ink melting into your accent"],
+    ["text-fade", {"from": "deep", "to": "paper"}, "Deep colour melting into your paper"],
+    ["text-fade", {"from": "accent", "to": "soft"}, "Your accent melting into its soft tint"],
+    ["text-fade", {"from": "ink", "to": "paper", "start": 30}, "Ink melting early (the fade starts 30% down)"],
+    ["text-fade", {"from": "ink", "to": "paper", "start": 70}, "Ink melting late (the fade starts 70% down)"]]},
+  {"name": "CTA", "code": "CT", "use": "The call to action: the comment keyword over your face.", "options": [
+    ["cta-keyword", {"keyword": "STYLE"}, "Quoted keyword over your face"]]},
+  {"name": "Zooms on your face", "code": "Z", "use": "How the camera moves in on you between cuts.", "options": [
+    ["zoom-long-out"],
+    ["zoom-quick-punch"],
+    ["zoom-hard-punch"],
+    ["zoom-long-out", {"from": 1.1, "dur": 2200}, "Gentle: starts at 110%, glides out over 2.2 s"],
+    ["zoom-long-out", {"from": 1.35, "dur": 5000}, "Dramatic: starts at 135%, glides out over 5 s"],
+    ["zoom-quick-punch", {"to": 1.3, "dur": 400}, "Big, fast punch-in (130% in 0.4 s)"]]},
+  {"name": "Diagrams", "code": "D", "use": "Full-screen drawings that explain an idea, building up line by line.", "options": [
+    ["tree", {"entrance": "fade", "bg": "accent"}, "Tree with your videos, fade in"],
+    ["tree", {"entrance": "rise"}, "Tree with your videos, clean rise"],
+    ["tree", {"entrance": "blur", "bg": "paper"}, "Tree with your videos, blur rise, on white"],
+    ["mindmap", {"entrance": "fade", "bg": "paper"}, "Mind map, fade in"],
+    ["mindmap", {"entrance": "rise", "bg": "accent"}, "Mind map, clean rise, on your colour"],
+    ["mindmap", {"entrance": "blur"}, "Mind map, blur rise"],
+    ["tree", {"entrance": "slow", "bg": "soft"}, "Tree with your videos, slow glide, on your soft tint"],
+    ["tree", {"entrance": "rise", "radius": 28}, "Tree with your videos, rounded thumbnails"]]},
+  {"name": "Split-screen diagrams", "code": "G", "use": "A diagram on the top half of the screen with you underneath.", "options": [
+    ["split-fanout", {"bg": "accent"}, "Fan out and merge, on your colour"],
+    ["split-hub", {"bg": "paper"}, "Plugged into your apps, on white"],
+    ["split-fanout", {"bg": "paper"}, "Fan out and merge, on white"],
+    ["split-hub", {"bg": "accent"}, "Plugged into your apps, on your colour"]]},
+  {"name": "Clean explainers", "code": "E", "use": "Short full-screen explainer scenes for one idea, ending in a split with you.", "options": [
+    ["explain-layers", {}, "Concept card, three layers light up, cut to a split"],
+    ["explain-path", {}, "Your first app looks around, then a winding road to the goal"],
+    ["explain-tool", {}, "Tool intro: your real app icon, its name, then what it does"]]},
+  {"name": "Logos", "code": "L", "use": "How the real app logos you mention land on screen.", "options": [
+    ["logos-tilt"],
+    ["logos-row"],
+    ["logos-tilt", {"speed": "slow"}, "Tilted and overlapping, slow glide in"],
+    ["logos-row", {"count": 4}, "Row of four icons rising one by one"]]},
+  {"name": "Real images", "code": "R", "use": "Real photos on screen while you talk, appearing with hard cuts.", "options": [
+    ["photos-flash", {}, "Photos flash above your head, hard cuts"],
+    ["hook-logos-photo", {}, "Hook: real logos and a real photo over the title"],
+    ["photos-flash", {"every": 650}, "Photos flash fast (every 0.65 s)"],
+    ["photos-flash", {"every": 1800, "count": 3}, "Photos hold longer (every 1.8 s)"],
+    ["photos-flash", {"radius": 36}, "Photos flash with rounded corners"]]},
+  {"name": "Split screen", "code": "S", "use": "A real page from the internet on top, you underneath: scroll, push in or ring the detail.", "options": [
+    ["split-scroll"],
+    ["split-push", {"bg": "accent"}, "Fast push-in to the key detail"],
+    ["split-ring", {"bg": "paper"}, "Card on white, ring on the key detail"],
+    ["split-ring", {"bg": "accent"}, "Card on your colour, ring on the key detail"],
+    ["split-push", {"bg": "accent", "zoom": 1.6}, "Gentler push-in (1.6x) to the key detail"],
+    ["split-scroll", {"distance": 1200}, "Full-width page, scrolls further down"]]},
+  {"name": "Tool talk", "code": "T", "use": "Talking about a tool: its site on top, you below, captions in a box on the seam.", "options": [
+    ["tool-box", {"box": "frosted"}, "Frosted glass box in your colour"],
+    ["tool-box", {"box": "solid"}, "Solid box in your colour"]]},
+  {"name": "Switching modes", "code": "M", "use": "How the edit jumps between you, a split screen and a full-screen diagram.", "options": [
+    ["modes", {"slide": true}, "Hard cuts, one slide into full screen"],
+    ["modes", {"slide": false}, "Hard cuts everywhere"]]},
+  {"name": "Caption placement", "code": "P", "use": "Where the captions sit on your face.", "options": [
+    ["place", {"top": 1420, "size": 84}, "Low, 84px"],
+    ["place", {"top": 1240, "size": 84}, "Under the chin, 84px"],
+    ["place", {"top": 1240, "size": 100}, "Under the chin, 100px"],
+    ["place", {"top": 1330, "size": 92}, "Chest height, 92px"],
+    ["place", {"top": 960, "size": 84}, "Middle of the frame, 84px"],
+    ["place", {"top": 560, "size": 84}, "Upper part of the frame, 84px"]]},
+  {"name": "White text drop shadows", "code": "H", "use": "The shadow that keeps white captions readable over bright, busy pages.", "options": [
+    ["shadow", {"css": "0 2px 6px rgba(0,0,0,.45)"}, "Soft and tight"],
+    ["shadow", {"css": "0 4px 24px rgba(0,0,0,.5)"}, "Soft and wide"],
+    ["shadow", {"css": "0 1px 2px rgba(0,0,0,.55), 0 6px 22px rgba(0,0,0,.38)"}, "Crisp edge plus soft spread"],
+    ["shadow", {"css": "0 0 16px rgba(0,0,0,.55), 0 0 4px rgba(0,0,0,.35)"}, "Halo all round"],
+    ["shadow", {"css": "0 1px 3px rgba(0,0,0,.6), 0 4px 14px rgba(0,0,0,.5), 0 10px 40px rgba(0,0,0,.45)"}, "Stronger, for bright screens"],
+    ["shadow", {"css": "none"}, "No shadow at all"]]}
+]

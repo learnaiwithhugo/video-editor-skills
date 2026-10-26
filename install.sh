@@ -11,7 +11,18 @@ STAMP="$(date +%Y-%m-%d-%H%M%S)"
 BACKUP="$HOME/.claude/skills-backup/$STAMP"
 
 mkdir -p "$SKILLS"
-for skill in build-my-style edit-my-video kallaway-edit new-edit-style; do
+# stylelab used to be called build-my-style. Retire the old copy (to the backup, never deleted) and
+# keep where its style folder lives.
+if [ -e "$SKILLS/build-my-style" ]; then
+  mkdir -p "$BACKUP"
+  mv "$SKILLS/build-my-style" "$BACKUP/build-my-style"
+  echo "  build-my-style is now called stylelab: moved the old copy to ~/.claude/skills-backup/$STAMP/"
+  if [ -f "$BACKUP/build-my-style/config.json" ] && [ ! -e "$SKILLS/stylelab" ]; then
+    mkdir -p "$BACKUP/stylelab"
+    cp "$BACKUP/build-my-style/config.json" "$BACKUP/stylelab/config.json"
+  fi
+fi
+for skill in stylelab edit-my-video kallaway-edit new-edit-style; do
   if [ -e "$SKILLS/$skill" ]; then
     mkdir -p "$BACKUP"
     mv "$SKILLS/$skill" "$BACKUP/$skill"
@@ -27,6 +38,6 @@ for skill in build-my-style edit-my-video kallaway-edit new-edit-style; do
 done
 
 echo ""
-echo "Done. Start a new Claude Code session, then type /build-my-style"
+echo "Done. Start a new Claude Code session, then type /stylelab"
 echo "to make your own editing style. When it's done, type /edit-my-video to edit your clips in it."
 echo "(Each one checks your Mac on first run and tells you if anything is missing.)"

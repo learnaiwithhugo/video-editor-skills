@@ -33,5 +33,5 @@ mechanics, don't copy the visuals" rule for the parts they name. Everything else
 ## Rules
 - Only the parts they name get copied exactly. Their own branding (the creator's colours, logo, their
   face) never comes along.
-- Images keep the image rules: square corners, no zoom unless the original's zoom is the point.
+- Images follow the person's own image rules in STYLE.md (corners, zoom), unless the original's look is the point.
 - If a moment needs a photo, search for one like it (`images.py search`), don't reuse the creator's photo.

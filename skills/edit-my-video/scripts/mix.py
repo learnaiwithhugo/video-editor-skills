@@ -89,7 +89,7 @@ def main():
     print(f"\nMix: {lufs} LUFS (target -16), true peak {tp} dBTP -> {out}")
     if n:
         print(f"Sound effects alone: {fx_lufs} LUFS, {round(v_lufs - fx_lufs, 1) if fx_lufs is not None else '?'} LU under the voice "
-              f"(the rule is barely noticeable: if one is clearly audible, lower its db)")
+              f"(set from the feel they picked in StyleLab; if they say louder or quieter, change its db)")
     if lufs is not None and abs(lufs + 16) > 1.0:
         print("WARNING: mix is more than 1 LU off -16 LUFS; check the voice (cut.py normalises it).")
 

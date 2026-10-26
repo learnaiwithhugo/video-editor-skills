@@ -46,7 +46,7 @@ The second test edit's one weakness: full-screen visuals sat small at the top wi
 | Push-ins on visuals are fast: under a second. | Pace. |
 | Face zooms are long and smooth: cut in at 120% and glide out over ~3.5 s (the locked main zoom). Now and then a quick clean punch (115% in 0.75 s) or a subtle hard punch on a strong line. | The creator's locked feel. |
 | Hard cuts between modes, with at most one slide (split into full screen). | |
-| Sound effects barely noticeable, at the levels in sfx.json. If one is clearly audible, it's too loud. | |
+| Sound effects at the levels in sfx.json (the feel they picked in StyleLab: `sfx/feel.json`). Don't go louder or quieter than that unless they ask. | Their choice. |
 | Captions never cover the mouth. On close selfie shots that usually means above the head. | |
 | No text shadow under see-through (shine) text: it turns the colour muddy. The kit handles this. | Found in testing. |
 

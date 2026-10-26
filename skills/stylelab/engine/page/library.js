@@ -15,7 +15,27 @@
 let C = {}, FONT = "", W8 = { title: 700, caption: 600, label: 500 }, CAP_SHADOW = "0 4px 24px rgba(0,0,0,.45)";
 let ICONS = [], SHINE = null, ZOOM = null, LINES = {}, TEXT_FADE = null;
 const LIB = {};
-function def(id, spec) { LIB[id] = { id, params: {}, loop: 4000, ...spec }; }
+// Every option accepts `shadowColour` (ink, accent, deep, soft, or any #hex): the caption/text shadow takes that colour,
+// same offsets and blur. Left out, it stays the current black.
+function def(id, spec) {
+  const build = spec.build;
+  LIB[id] = { id, params: {}, loop: 4000, ...spec, build(s, P) {
+    const was = CAP_SHADOW;
+    if (P && P.shadowColour) CAP_SHADOW = shadowWith(P.shadowColour);
+    try { build(s, P); } finally { CAP_SHADOW = was; }
+  } };
+}
+function shadowWith(colour) {
+  const hex = { ink: C.ink, accent: C.accent, deep: C.deep, soft: C.soft, paper: C.paper }[colour] || colour;
+  if (!/^#[0-9a-f]{6}$/i.test(hex)) return CAP_SHADOW;
+  return CAP_SHADOW.replace(/rgba?\(([^)]*)\)/g, (m, inner) => { const a = inner.split(",")[3]; return a != null ? rgba(hex, +a) : hex; });
+}
+// Params left null take the person's own words (brand.py --lines) when they gave some, else a neutral placeholder.
+function resolve(P, defaults) {
+  const o = { ...P };
+  for (const k of Object.keys(defaults)) if (o[k] == null || o[k] === "") o[k] = defaults[k];
+  return o;
+}
 
 // Called once by app.js after brand.json (and any locked labs) have loaded.
 function setBrand(b, extra = {}) {
@@ -88,9 +108,34 @@ function blurRise(el, delay, d = 480) {   // starts heavily blurred and faint, s
   el.animate([{ opacity: 0, transform: "translateY(26px)", filter: "blur(18px)" }, { opacity: .55, filter: "blur(7px)", offset: .4 }, { opacity: 1, transform: "translateY(0)", filter: "blur(0)" }],
     { duration: d, delay, easing: EXPO, fill: "backwards" });
 }
+// Optional "pop": scales up with a small overshoot, then settles. Off unless an option is given entrance/rise "pop".
+function popIn(el, delay, d = 520, from = 0.82) {
+  el.animate([{ transform: `scale(${from})` }, { transform: "scale(1.06)", offset: 0.62 }, { transform: "scale(1)" }], { duration: d, delay, easing: "ease-out", fill: "backwards", composite: "add" });
+  el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d * 0.45, delay, easing: "ease-out", fill: "backwards" });
+}
+// Optional "type": letters appear one by one (plain text only; anything else just fades in).
+function typeIn(el, delay, per = 38) {
+  const kids = [...el.childNodes];
+  if (!kids.length || kids.some(n => n.nodeType !== 3)) { el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay, easing: "ease-out", fill: "backwards" }); return; }
+  const text = el.textContent;
+  el.textContent = "";
+  el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1, delay, fill: "backwards" });   // a pill or box shows up as its first letter starts
+  [...text].forEach((ch, i) => {
+    const sp = document.createElement("span");
+    sp.textContent = ch; sp.style.whiteSpace = "pre";
+    el.appendChild(sp);
+    sp.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1, delay: delay + i * per, fill: "backwards" });
+  });
+}
 // Calm entrances for visual parts. Movement is added on top of each element's own transform.
 function enter(el, delay, kind = "rise") {
-  if (kind === "fade") {
+  if (kind === "pop") {
+    popIn(el, delay);
+  } else if (kind === "slide") {
+    slideIn(el, delay, -90, 0, 700);
+  } else if (kind === "type") {
+    typeIn(el, delay);
+  } else if (kind === "fade") {
     el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay, easing: "ease-out", fill: "backwards" });
   } else if (kind === "blur") {
     el.animate([{ transform: "translateY(34px)" }, { transform: "translateY(0)" }], { duration: 560, delay, easing: EXPO, fill: "backwards", composite: "add" });
@@ -167,8 +212,8 @@ function diagTitle(s, parent, tag, title, onAccent, t0, centre = false) {
 // =====================================================================================================
 def("cap-soft-fade", { section: "Default captions", label: "Soft fade-up", params: { top: 1240, size: 84 },
   build(s, P) { footage(s); chunks(s, timed(LINES.captions, 300, 950), { ...P, enterFx: softFade, end: 3400 }); } });
-def("cap-word-fade", { section: "Default captions", label: "Quick word fade", params: { top: 1240, size: 84 },
-  build(s, P) { footage(s); chunks(s, timed(LINES.captions, 300, 950), { ...P, end: 3400, enterFx: (l, sp, at) => sp.forEach((w, i) => w.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180, delay: at + i * 90, fill: "backwards" })) }); } });
+def("cap-word-fade", { section: "Default captions", label: "Quick word fade", params: { top: 1240, size: 84, dur: 180, stagger: 90 },
+  build(s, P) { footage(s); chunks(s, timed(LINES.captions, 300, 950), { ...P, end: 3400, enterFx: (l, sp, at) => sp.forEach((w, i) => w.animate([{ opacity: 0 }, { opacity: 1 }], { duration: P.dur, delay: at + i * P.stagger, fill: "backwards" })) }); } });
 def("cap-cut", { section: "Default captions", label: "Straight cut, no motion", params: { top: 1240, size: 84 },
   build(s, P) { footage(s); chunks(s, timed(LINES.captions, 300, 950), { ...P, end: 3400, enterFx: (l, _, at) => l.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1, delay: at, fill: "backwards" }) }); } });
 
@@ -241,24 +286,26 @@ def("zoom-hard-punch", { section: "Zooms on your face", label: "Hard punch-in, s
 // DIAGRAMS (no pop-ins: each part fades, rises or blur-rises in, lines draw on)
 // =====================================================================================================
 // Full-screen backgrounds behind visuals rotate between paper and the accent. Never black.
-function backdrop(s, bg) { return s.el("div", { position: "absolute", inset: "0", background: bg === "accent" ? C.accent : bg === "soft" ? C.soft : C.paper }); }
-def("tree", { section: "Diagrams", label: "Tree with your videos", params: { entrance: "rise", title: "my videos", bg: "accent" },
-  build(s, P) {
-    const k = P.entrance;
+const bgFill = (bg) => (bg === "accent" ? C.accent : bg === "soft" ? C.soft : bg === "ink" ? C.ink : C.paper);   // bg "ink" = their ink colour (which can be black)
+const bgDark = (bg) => bg === "accent" || bg === "ink";   // light text and lines sit on these
+function backdrop(s, bg) { return s.el("div", { position: "absolute", inset: "0", background: bgFill(bg) }); }
+def("tree", { section: "Diagrams", label: "Tree with your videos", params: { entrance: "rise", title: null, bg: "accent", radius: 0 },
+  build(s, P0) {
+    const P = resolve(P0, { title: LINES.tree || "Your title" }), k = P.entrance;
     backdrop(s, P.bg);
     const p = panel(s, { left: "60px", top: "560px", width: "960px", height: "760px", border: P.bg === "paper" ? `2px solid ${rgba(C.ink, .08)}` : "0" }); enter(p, 150, k);
     const xs = [150, 370, 590, 810];
     lines(s, p, 960, 760, ["M480 170 L480 230", ...xs.map(x => `M480 230 L${x} 230 L${x} 290`)], 700, 70);
     enter(pill(s, p, 480, 110, P.title, { background: C.accent, color: "#fff", border: "0", fontSize: "44px", padding: "20px 36px" }), 420, k);
     xs.forEach((x, i) => {
-      const t = s.el("div", { position: "absolute", left: x - 95 + "px", top: "300px", width: "190px", height: "338px", borderRadius: "0", overflow: "hidden", border: `5px solid ${C.accent}`, boxShadow: `0 8px 22px ${rgba(C.ink, .15)}` }, p);
+      const t = s.el("div", { position: "absolute", left: x - 95 + "px", top: "300px", width: "190px", height: "338px", borderRadius: (P.radius || 0) + "px", overflow: "hidden", border: `5px solid ${C.accent}`, boxShadow: `0 8px 22px ${rgba(C.ink, .15)}` }, p);
       s.img(`assets/thumb-${i + 1}.jpg`, { width: "100%", height: "100%", objectFit: "cover", display: "block" }, t);
       enter(t, 1000 + i * 130, k);
     });
   } });
-def("mindmap", { section: "Diagrams", label: "Mind map", params: { entrance: "rise", centre: "My edit style", topics: ["Fonts", "Colours", "Captions", "Motion", "Sounds"], bg: "paper" },
-  build(s, P) {
-    const k = P.entrance;
+def("mindmap", { section: "Diagrams", label: "Mind map", params: { entrance: "rise", centre: null, topics: null, bg: "paper" },
+  build(s, P0) {
+    const P = resolve(P0, { centre: LINES.centre || "Your title", topics: LINES.topics || ["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"] }), k = P.entrance;
     backdrop(s, P.bg);
     const p = panel(s, { left: "60px", top: "610px", width: "960px", height: "700px", border: P.bg === "paper" ? `2px solid ${rgba(C.ink, .08)}` : "0" }); enter(p, 150, k);
     const pos = [[480, 110], [180, 240], [780, 240], [210, 560], [750, 560]].slice(0, P.topics.length);
@@ -266,6 +313,7 @@ def("mindmap", { section: "Diagrams", label: "Mind map", params: { entrance: "ri
     enter(pill(s, p, 480, 380, P.centre, { background: C.deep, color: "#fff", border: "0", fontSize: "44px", padding: "22px 38px" }), 420, k);
     P.topics.forEach((t, i) => enter(pill(s, p, pos[i][0], pos[i][1], t), 1000 + i * 120, k));
   } });
+const fanWords = (P = {}) => resolve(P, { tag: LINES.fan?.tag || "OVERVIEW", title: LINES.fan?.title || "Your title", from: LINES.fan?.from || "Start", items: LINES.fan?.items || ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"], to: LINES.fan?.to || "Result" });
 function fanOut(s, top, t0, P, onAccent) {
   const ys = [330, 455, 580, 705, 830], col = onAccent ? "#fff" : C.accent;
   diagTitle(s, top, P.tag, P.title, onAccent, t0);
@@ -275,13 +323,14 @@ function fanOut(s, top, t0, P, onAccent) {
   P.items.forEach((t, i) => enter(node(s, top, 540, ys[i], { label: t, w: 210 }), t0 + 1100 + i * 100));
   enter(node(s, top, 910, 580, { label: P.to, w: 240, dark: true }), t0 + 2200);
 }
-const FAN = { tag: "PARALLEL", title: "Five jobs at once", from: "Idea", items: ["Script", "Film", "Edit", "Caption", "Post"], to: "One reel" };
-def("split-fanout", { section: "Split-screen diagrams", label: "Fan out and merge", loop: 6500, params: { ...FAN, bg: "accent" },
-  build(s, P) { faceBottom(s); fanOut(s, topHalf(s, P.bg === "accent" ? C.accent : C.paper), 600, P, P.bg === "accent"); } });
-def("split-hub", { section: "Split-screen diagrams", label: "Plugged into your apps", loop: 6500, params: { tag: "TOOLS", title: "One hub, your apps", bg: "paper" },
-  build(s, P) {
+// Words: the person's (brand.py --lines '{"fan": {"tag","title","from","items","to"}}') or neutral placeholders.
+def("split-fanout", { section: "Split-screen diagrams", label: "Fan out and merge", loop: 6500, params: { tag: null, title: null, from: null, items: null, to: null, bg: "accent" },
+  build(s, P0) { const P = fanWords(P0); faceBottom(s); fanOut(s, topHalf(s, bgFill(P.bg)), 600, P, bgDark(P.bg)); } });
+def("split-hub", { section: "Split-screen diagrams", label: "Plugged into your apps", loop: 6500, params: { tag: null, title: null, bg: "paper" },
+  build(s, P0) {
+    const P = resolve(P0, { tag: LINES.hub?.tag || "OVERVIEW", title: LINES.hub?.title || "Your title" });
     faceBottom(s);
-    const onA = P.bg === "accent", top = topHalf(s, onA ? C.accent : C.paper);
+    const onA = bgDark(P.bg), top = topHalf(s, bgFill(P.bg));
     diagTitle(s, top, P.tag, P.title, onA, 250);
     const hub = ICONS[0] || {};
     enter(node(s, top, 540, 400, { icon: hub.file, label: hub.name || "Hub", w: 360 }), 600);
@@ -300,13 +349,13 @@ def("split-hub", { section: "Split-screen diagrams", label: "Plugged into your a
 // LOGOS (real app icons only, pulled from the person's own Mac)
 // =====================================================================================================
 const appIcon = (s, src, css) => s.img(src, { position: "absolute", width: "340px", height: "340px", filter: "drop-shadow(0 18px 30px rgba(0,0,0,.35))", ...css });
-def("logos-tilt", { section: "Logos", label: "Tilted and overlapping", params: { speed: "rise", top: 230 },
-  build(s, P) { footage(s); enter(appIcon(s, icon(1), { left: "455px", top: P.top + 70 + "px", transform: "rotate(7deg)", zIndex: "1" }), 520, P.speed); enter(appIcon(s, icon(0), { left: "240px", top: P.top + "px", transform: "rotate(-6deg)", zIndex: "2" }), 300, P.speed); } });
-def("logos-row", { section: "Logos", label: "Row of icons rising one by one", params: { count: 3, top: 330 },
+def("logos-tilt", { section: "Logos", label: "Tilted and overlapping", params: { speed: "rise", top: 230, tilt: 6 },   // tilt: degrees (6 = the current look, 0 = both flat)
+  build(s, P) { footage(s); enter(appIcon(s, icon(1), { left: "455px", top: P.top + 70 + "px", transform: `rotate(${P.tilt * 7 / 6}deg)`, zIndex: "1" }), 520, P.speed); enter(appIcon(s, icon(0), { left: "240px", top: P.top + "px", transform: `rotate(${-P.tilt}deg)`, zIndex: "2" }), 300, P.speed); } });
+def("logos-row", { section: "Logos", label: "Row of icons rising one by one", params: { count: 3, top: 330, tilt: 4 },   // tilt: degrees (4 = the current look, 0 = a straight row)
   build(s, P) {
     footage(s);
     for (let i = 0; i < P.count; i++) {
-      const im = s.img(icon(i), { position: "absolute", left: 540 + (i - (P.count - 1) / 2) * 240 - 100 + "px", top: P.top + "px", width: "200px", height: "200px", transform: `rotate(${[-4, 3, -2, 5][i % 4]}deg)`, filter: "drop-shadow(0 14px 24px rgba(0,0,0,.35))" });
+      const im = s.img(icon(i), { position: "absolute", left: 540 + (i - (P.count - 1) / 2) * 240 - 100 + "px", top: P.top + "px", width: "200px", height: "200px", transform: `rotate(${[-4, 3, -2, 5][i % 4] * P.tilt / 4}deg)`, filter: "drop-shadow(0 14px 24px rgba(0,0,0,.35))" });
       enter(im, 400 + i * 200);
     }
   } });
@@ -332,7 +381,7 @@ def("split-scroll", { section: "Split screen", label: "Full-width page, slow scr
 def("split-push", { section: "Split screen", label: "Fast push-in to the key detail", loop: 5000, params: { bg: "accent", zoom: 2.3 },
   build(s, P) {
     faceBottom(s);
-    const { c, W, H, x, y, k: f } = cardTop(s, P.bg === "accent" ? C.accent : C.paper);
+    const { c, W, H, x, y, k: f } = cardTop(s, bgFill(P.bg));
     c.animate([{ transform: "translateY(60px)" }, { transform: "translateY(0)" }], { duration: 400, delay: 150, easing: EXPO, fill: "backwards", composite: "add" });
     c.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, delay: 150, fill: "backwards" });
     const [tx0, ty0, tw, th] = REPO.target.map(n => n * f), k = P.zoom, sx = tx0 + tw / 2, sy = ty0 + th / 2;
@@ -343,7 +392,7 @@ def("split-push", { section: "Split screen", label: "Fast push-in to the key det
 def("split-ring", { section: "Split screen", label: "Card with a ring on the key detail", loop: 5000, params: { bg: "paper" },
   build(s, P) {
     faceBottom(s);
-    const onA = P.bg === "accent", { c, k: f } = cardTop(s, onA ? C.accent : C.paper);
+    const onA = P.bg === "accent", { c, k: f } = cardTop(s, bgFill(P.bg));
     enter(c, 250);
     const [a, b, w, h] = REPO.target.map(n => n * f);
     ring(s, c, a, b, w, h, 1500, onA ? C.deep : C.accent);
@@ -389,6 +438,7 @@ def("modes", { section: "Switching modes", label: "Hard cuts, one slide into ful
     const pan = s.el("div", { position: "absolute", left: "0", top: "0", width: "1080px", background: C.accent, overflow: "hidden" });
     pan.animate(holdFrames("height", ["0px", "960px", "1920px", "0px"], AT, T, ease).map(f => ({ ...f, easing: sub })), o);
     const split = s.el("div", { position: "absolute", left: "0", top: "0", width: "1080px", height: "960px" }, pan);
+    const FAN = fanWords();
     fanOut(s, split, AT[0], FAN, true);
     split.animate([{ opacity: 1 }, { opacity: 0 }], { duration: P.slide ? 250 : 1, delay: AT[1], fill: "forwards" });
     const full = s.el("div", { position: "absolute", left: "0", top: "0", width: "1080px", height: "1920px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "40px", fontFamily: FONT, color: "#fff" }, pan);
@@ -428,15 +478,18 @@ function fitSize(text, size, { maxW = 940, weight = W8.title, ls = -0.035 } = {}
 const ASSET = {};   // undefined while still asking, then true (it's there) or false
 let PHOTOS = [];    // paths of their photos; assets/photos/photos.json lists the file names
 const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const cutoutSrc = () => (IS_SAFARI ? "assets/face-cutout.mov" : "assets/face-cutout.webm");   // Chrome shows see-through video as WebM, Safari as HEVC .mov
-function checkAssets() {
-  const ask = (key, url) => fetch("/api/has?f=" + encodeURIComponent(url), { cache: "no-store" }).then(r => r.json()).then(j => { ASSET[key] = !!j.exists; }, () => { ASSET[key] = false; });
-  ask("cutout", cutoutSrc()); ask("folder", "assets/folder.png");
-  fetch("assets/photos/photos.json", { cache: "no-store" }).then(r => (r.ok ? r.json() : [])).then(list => {
+const cutoutSrc = () => (IS_SAFARI ? "assets/face-cutout-hevc.mp4" : "assets/face-cutout.webm");   // Chrome shows see-through video as WebM, Safari as HEVC with alpha (in .mp4: artifacts don't serve .mov)
+function checkAssets() {   // boot.js has already read assets/has.json (HAS) by now; a missing has.json falls back to asking for the two files directly
+  const ask = (key, url) => {
+    if (HAS) { ASSET[key] = !!HAS[url]; return Promise.resolve(); }
+    return fetch(url, { method: "HEAD", cache: "no-store" }).then(r => { ASSET[key] = r.ok; }, () => { ASSET[key] = false; });
+  };
+  const photos = optJSON("assets/photos/photos.json", []).then(list => {
     PHOTOS = (Array.isArray(list) ? list : []).map(f => (typeof f === "string" ? f : (f && (f.file || f.name)) || "")).filter(Boolean).map(f => (f.includes("/") ? f : "assets/photos/" + f));
-  }).catch(() => {});
-  // the text fade they locked in the Text lab (the server answers "null" until something is locked)
-  fetch("/locked/text_fade.json", { cache: "no-store" }).then(r => (r.ok ? r.json() : null)).then(j => { if (j && j.background_image) TEXT_FADE = j; }).catch(() => {});
+  });
+  // the text fade they locked (locked/text_fade.json; nothing there until something is locked)
+  const fade = optJSON("locked/text_fade.json", null).then(j => { if (j && j.background_image) TEXT_FADE = j; });
+  return Promise.all([ask("cutout", cutoutSrc()), ask("folder", "assets/folder.png"), photos, fade]);
 }
 const photoAt = (i) => (PHOTOS.length ? PHOTOS[i % PHOTOS.length] : null);
 function notice(s, text, top = 1330) {   // a small honest label for a piece that isn't made yet
@@ -445,7 +498,7 @@ function notice(s, text, top = 1330) {   // a small honest label for a piece tha
 }
 // A real photo cropped to its box: square corners, always, and it never zooms. No photo yet = a neutral box saying so.
 function photoBox(s, parent, src, css = {}, pos = "50% 50%", slot = 0, labelSize = 34) {
-  const box = s.el("div", { position: "absolute", overflow: "hidden", ...css, borderRadius: "0" }, parent);
+  const box = s.el("div", { position: "absolute", overflow: "hidden", borderRadius: "0", ...css }, parent);   // square unless the option was given a radius
   if (src) { s.img(src, { width: "100%", height: "100%", objectFit: "cover", objectPosition: pos, display: "block" }, box); return box; }
   box.style.background = [C.soft, mixHex(C.soft, C.paper, .55), mixHex(C.soft, C.accent, .6), mixHex(C.soft, C.ink, .85)][slot % 4];
   s.el("div", { position: "absolute", inset: "0", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0 6%", fontFamily: FONT, fontWeight: String(W8.label), fontSize: labelSize + "px", color: rgba(C.ink, .55), lineHeight: "1.15" }, box, "your photos go here");
@@ -513,7 +566,7 @@ function headline(s, lns, { top = 260, rise = "blur", parent = null, gap = 0 } =
   const box = s.el("div", { position: "absolute", left: "0", right: "0", top: top + "px", textAlign: "center", fontFamily: FONT, fontWeight: String(W8.title), lineHeight: "0.98", textShadow: CAP_SHADOW }, parent);
   lns.forEach(([text, size, colour], i) => {   // letter-spacing goes on each line, so it scales with that line's size
     const l = s.el("div", { fontSize: fitSize(text, size) + "px", letterSpacing: "-0.035em", color: colour, marginTop: i ? gap + "px" : "0", whiteSpace: "nowrap" }, box, text);
-    (rise === "clean" ? cleanRise : blurRise)(l, 300 + i * 260);
+    ({ clean: cleanRise, pop: popIn, type: typeIn, slide: (e, d) => slideIn(e, d, -90, 0, 700) }[rise] || blurRise)(l, 300 + i * 260);
   });
   return box;
 }
@@ -644,7 +697,7 @@ function layerCube(s, parent, cx, cy, size, at) {
 // =====================================================================================================
 // TEXT BEHIND YOUR HEAD
 // Layers: their footage, then the text, then the person cut out of the same footage on top
-// (assets/face-cutout.webm for Chrome, face-cutout.mov for Safari, lined up with assets/face-loop.mp4).
+// (assets/face-cutout.webm for Chrome, face-cutout-hevc.mp4 for Safari, lined up with assets/face-loop.mp4).
 // No cut-out file yet = the text sits over the face and a small label says so.
 // =====================================================================================================
 const up = (t, on) => (on ? String(t).toUpperCase() : String(t));
@@ -699,8 +752,9 @@ def("headline-stack", { section: "Headline: white on top, accent underneath", la
 // Hard cuts between full screen and split, never crossfades. Captions are pills in the accent.
 // =====================================================================================================
 def("explain-layers", { section: "Clean explainers", label: "Concept card, its three layers light up, cut to a split", loop: 8600,
-  params: { title: null, lead: "and there's 3 layers", part: "Layer One", rows: ["Who it's for", "What it does", "How it works"], glyph: "spark", bg: "tint", caps: null },
-  build(s, P) {
+  params: { title: null, lead: null, part: null, rows: null, glyph: "spark", bg: "tint", caps: null },   // lead / part / rows: brand.py --lines '{"layers": {"lead","part","rows"}}'
+  build(s, P0) {
+    const L0 = LINES.layers || {}, P = resolve(P0, { lead: L0.lead || "and there are three parts", part: L0.part || "Part one", rows: L0.rows || ["First point", "Second point", "Third point"] });
     const T = 8600, CUT = 3000, tl = P.title || LINES.title, bg = sceneBg(P.bg);
     // 1. full-screen card: the title ghosts in, a cube floats up and its three layers light up one by one
     const a = fullScene(s, T, 0, CUT, bg);
@@ -725,7 +779,7 @@ def("explain-layers", { section: "Clean explainers", label: "Concept card, its t
       s.el("div", { width: "32px", height: "32px", borderRadius: "50%", border: `3px solid ${C.accent}`, boxSizing: "border-box", flex: "none" }, r);
       s.el("span", {}, r, q);
     });
-    capPill(s, null, 960, evenCaps(P.caps || ["Layer 1", "is the", P.part, "three simple things", "that explain", "who it's for", "what it does", "and how it works"], CUT, T));
+    capPill(s, null, 960, evenCaps(P.caps || ["Part 1", "is the", P.part, "three simple things", "that explain", String(P.rows[0]).toLowerCase(), String(P.rows[1] || "").toLowerCase(), "and " + String(P.rows[2] || "").toLowerCase()], CUT, T));
   } });
 
 def("explain-path", { section: "Clean explainers", label: "Your first app looks around, then a winding road to the goal", loop: 7600, params: { bg: "tint", caps: null, caps2: null },
@@ -761,8 +815,9 @@ def("explain-path", { section: "Clean explainers", label: "Your first app looks 
   } });
 
 def("explain-pills", { section: "Clean explainers", label: "Title and tile, two pills branch off, a card of your videos fills in", loop: 7000,
-  params: { title: "The Plan", glyph: "target", pills: ["Rules", "Examples"], bg: "tint", caps: null },
-  build(s, P) {
+  params: { title: null, glyph: "target", pills: null, bg: "tint", caps: null, radius: 0 },   // title / pills: brand.py --lines '{"plan": "...", "pills": ["..", ".."]}'
+  build(s, P0) {
+    const P = resolve(P0, { title: LINES.plan || "Your title", pills: LINES.pills || ["Point one", "Point two"] });
     const T = 7000;
     fullScene(s, T, 0, T, sceneBg(P.bg));
     const w = camLayer(s, null);
@@ -786,14 +841,14 @@ def("explain-pills", { section: "Clean explainers", label: "Title and tile, two 
     ghost(card, 3500, 300);
     const th = (n) => `assets/thumb-${n}.jpg`, pics = [th(1), photoAt(0) || th(3), th(2), th(4), photoAt(1) || th(1), th(3)];
     pics.forEach((src, i) => {
-      const cell = photoBox(s, card, src, { position: "relative", height: "156px" });
+      const cell = photoBox(s, card, src, { position: "relative", height: "156px", borderRadius: (P.radius || 0) + "px" });
       ghost(cell, 3820 + i * 70, 300);
       if (i === 2) {   // one tile swaps to another video while they talk (a hard swap, no zoom)
         const sw = s.img(photoAt(2) || th(4), { position: "absolute", inset: "0", width: "100%", height: "100%", objectFit: "cover" }, cell);
         sw.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: 5600, fill: "both" });
       }
     });
-    capPill(s, null, 1240, evenCaps(P.caps || ["step two", `is ${P.title.toLowerCase()}`, "so every move", "has a clear", "set of rules", "behind it", "built from", "what already works"], 0, T));
+    capPill(s, null, 1240, evenCaps(P.caps || ["step two", `is ${P.title.toLowerCase()}`, "it comes with", String(P.pills[0]).toLowerCase(), "and", String(P.pills[1] || P.pills[0]).toLowerCase(), "so you know", "exactly what to do"], 0, T));
   } });
 
 def("explain-tool", { section: "Clean explainers", label: "Tool intro: your real app icon, its name, then what it does", loop: 6600, params: { name: null, icon: 0, bezel: false, bg: "tint", caps: null },
@@ -829,8 +884,9 @@ def("explain-tool", { section: "Clean explainers", label: "Tool intro: your real
   } });
 
 def("explain-folder", { section: "Clean explainers", label: "A folder with files sticking out, too many things, then just one", loop: 8200,
-  params: { file: "Notes", left: "40 files", right: "100 apps", one: "Just One", bg: "paper", caps: null, caps2: null, caps3: null },
-  build(s, P) {
+  params: { file: "Notes", left: null, right: null, one: null, bg: "paper", caps: null, caps2: null, caps3: null },   // left / right / one: brand.py --lines '{"folder": {"left","right","one"}}'
+  build(s, P0) {
+    const F0 = LINES.folder || {}, P = resolve(P0, { left: F0.left || "Too many files", right: F0.right || "Too many apps", one: F0.one || "Just one" });
     const T = 8200, B = 3200, C2 = 6200, bg = sceneBg(P.bg), shadow = `drop-shadow(0 14px 18px ${rgba(C.ink, .16)})`;
     faceBottom(s);   // one face under all three scenes, so it never jumps at the cuts
     // 1. a real Mac folder with two files sticking out; it flashes red
@@ -856,7 +912,7 @@ def("explain-folder", { section: "Clean explainers", label: "A folder with files
     ghostTitle(s, c, [P.one], 330, 100, C2 + 60, 300);
     tileIn(appTile(s, c, 540, 640, 260, icon(0)), C2 + 40);
     capPill(s, null, 960, [
-      ...evenCaps(P.caps || ["1. Stop collecting", "stuff", "you're never", "going to use"], 0, B),
+      ...evenCaps(P.caps || ["Too much", "stuff", "gets in", "the way"], 0, B),
       ...evenCaps(P.caps2 || [`You don't need ${P.left}`, `or ${P.right}`, "you need"], B, C2),
       ...evenCaps(P.caps3 || ["just one", "that does it all"], C2, T)]);
   } });
@@ -865,24 +921,24 @@ def("explain-folder", { section: "Clean explainers", label: "A folder with files
 // REAL IMAGES (photos come from assets/photos/photos.json; none yet = neutral boxes saying so)
 // Photos: square corners, hard cuts, never any zoom. Logos are shown as they are, only a drop shadow.
 // =====================================================================================================
-def("photos-flash", { section: "Real images", label: "Photos flash above your head, hard cuts", loop: 5200, params: { count: 4, every: 1300, top: 250, caps: null },
+def("photos-flash", { section: "Real images", label: "Photos flash above your head, hard cuts", loop: 5200, params: { count: 4, every: 1300, top: 250, caps: null, radius: 0 },
   build(s, P) {
     const T = 5200;
     footage(s);
-    const frame = s.el("div", { position: "absolute", left: "250px", top: P.top + "px", width: "580px", height: "400px", overflow: "hidden", borderRadius: "0", boxShadow: "0 16px 34px rgba(0,0,0,.35)" });
+    const frame = s.el("div", { position: "absolute", left: "250px", top: P.top + "px", width: "580px", height: "400px", overflow: "hidden", borderRadius: (P.radius || 0) + "px", boxShadow: "0 16px 34px rgba(0,0,0,.35)" });
     for (let i = 0; i < P.count; i++) {
       const p = photoBox(s, frame, photoAt(i), { left: "0", top: "0", width: "100%", height: "100%" }, "50% 45%", i);
       cutWindow(p, i * P.every, i === P.count - 1 ? T : (i + 1) * P.every, T);
     }
     chunks(s, timed(P.caps || LINES.talk, 0, P.every), { top: 1240, size: 76, enterFx: softFade, end: T });
   } });
-def("hook-logos-photo", { section: "Real images", label: "Hook: real logos and a real photo over the title", loop: 5200, params: { top: 260, sub: "(here's the whole system)", title: null },
+def("hook-logos-photo", { section: "Real images", label: "Hook: real logos and a real photo over the title", loop: 5200, params: { top: 260, sub: "(here's the whole system)", title: null, radius: 0 },
   build(s, P) {
     footage(s);
     const row = s.el("div", { position: "absolute", left: "0", right: "0", top: P.top + "px", display: "flex", justifyContent: "center", gap: "18px" });
     // the app icons exactly as they are (only a drop shadow, no tile or bubble round them); the photo has square corners and just appears
     [["img", icon(0)], ["photo", photoAt(0)], ["img", icon(1)]].forEach(([k, src], i) => {
-      if (k === "photo") { const ph = photoBox(s, row, src, { position: "relative", width: "200px", height: "200px", boxShadow: "0 14px 30px rgba(0,0,0,.35)" }, "50% 40%", 0, 26); cutWindow(ph, 120 + i * 110, 5200, 5200); }
+      if (k === "photo") { const ph = photoBox(s, row, src, { position: "relative", width: "200px", height: "200px", borderRadius: (P.radius || 0) + "px", boxShadow: "0 14px 30px rgba(0,0,0,.35)" }, "50% 40%", 0, 26); cutWindow(ph, 120 + i * 110, 5200, 5200); }
       else tileIn(s.img(src, { width: "200px", height: "200px", objectFit: "contain", filter: "drop-shadow(0 14px 22px rgba(0,0,0,.35))" }, row), 120 + i * 110);
     });
     const t = s.el("div", { position: "absolute", left: "80px", right: "80px", top: P.top + 250 + "px", textAlign: "center", fontFamily: FONT, fontWeight: String(W8.title), fontSize: "92px", letterSpacing: "-0.04em", color: C.text, textShadow: CAP_SHADOW, lineHeight: "1.02" });
@@ -907,7 +963,7 @@ def("text-fade", { section: "Text fades", label: "Title that melts away", loop: 
 def("text-fade-locked", { section: "Text fades", label: "Your locked text fade", loop: 6000, params: { lines: null },
   build(s, P) {
     const L = TEXT_FADE;
-    if (L && L.bg === "face") footage(s); else s.el("div", { position: "absolute", inset: "0", background: L && L.bg === "blue" ? C.accent : C.paper });
+    if (L && L.bg === "face") footage(s); else s.el("div", { position: "absolute", inset: "0", background: L && (L.bg === "accent" || L.bg === "blue") ? C.accent : C.paper });
     const lns = P.lines || LINES.title, weight = (L && L.weight) || W8.title, track = L ? (L.track != null ? L.track : -45) / 1000 : -0.045;
     const sz = fitSize(lns, (L && L.size) || 210, { weight, ls: track });
     const t = s.el("div", { position: "absolute", left: "0", right: "0", top: ((L && L.top) || 730) + "px", textAlign: "center", fontFamily: FONT, fontWeight: String(weight), fontSize: sz + "px", letterSpacing: track + "em", lineHeight: ".95",
@@ -927,13 +983,13 @@ def("text-fade-locked", { section: "Text fades", label: "Your locked text fade",
 // =====================================================================================================
 // CTA
 // =====================================================================================================
-def("cta-keyword", { section: "CTA", label: "Quoted keyword over your face", loop: 6000, params: { keyword: "STYLE", lead: "comment", top: 280, size: 230 },
-  build(s, P) {
+def("cta-keyword", { section: "CTA", label: "Quoted keyword over your face", loop: 6000, params: { keyword: null, lead: "comment", top: 280, size: 230 },   // keyword: brand.py --lines '{"keyword": "STYLE"}'
+  build(s, P0) {
+    const P = resolve(P0, { keyword: LINES.keyword || "COMMENT" });
     footage(s);
     const box = s.el("div", { position: "absolute", left: "0", right: "0", top: P.top + "px", textAlign: "center", fontFamily: FONT, fontWeight: String(W8.title), lineHeight: ".98", textShadow: CAP_SHADOW, color: C.text });
     cleanRise(s.el("div", { fontSize: "60px", fontWeight: String(W8.caption), letterSpacing: "-0.02em" }, box, P.lead), 250);
     const big = s.el("div", { fontSize: fitSize("“" + P.keyword + "”", P.size, { ls: -0.04 }) + "px", letterSpacing: "-0.04em", whiteSpace: "nowrap" }, box);
     [["“", C.accent], [P.keyword, C.text], ["”", C.accent]].forEach(([ch, col], i) => blurRise(s.el("span", { display: "inline-block", color: col }, big, ch), 500 + i * 120));
   } });
-
-checkAssets();
+// checkAssets() is called by app.js once it knows this is a real round (the example round has no files to look for).

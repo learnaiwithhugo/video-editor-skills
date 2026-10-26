@@ -4,15 +4,15 @@ Build your own video editing style, then let Claude edit your raw talking-head c
 
 ## The two main skills
 
-**1. /build-my-style** makes your editing style on a page in your browser. You don't need to know the steps: it takes you through everything, one question at a time.
+**1. /stylelab** builds your editing style from scratch, on your own private StyleLab page that you open on your laptop or your phone. You don't need to know the steps: it takes you through everything, one question at a time.
 
-- **Starting from scratch or already have a brand?** Either works. Paste your website and it reads your colours and font straight off it, or it suggests a few palettes and fonts and you just pick.
-- **Send a few reels you love.** It breaks them down frame by frame to learn the timing, motion and pacing. If one moment really stands out, it pulls every frame so you can point at it ("frames 7 to 16") and it rebuilds that exact moment in your brand. Every creator you learn from gets listed on a Creators page with their reels playable.
-- **Your page fills with real animations, in your colours, on your own face:** captions, accent and intro text, **text behind your head** (it cuts you out of your own clip so the words sit behind you), white-and-accent headlines, clean explainers (titles that fade in, real logo tiles, the camera gliding as each piece arrives), zooms, diagrams, logos, split screens. Mark each one **Keep**, **Maybe** or **Drop**, add a note like "slower" or "bigger", and press Submit. Each round only shows what's still in play.
-- **Real photos, if you want them.** It asks first. If yes, it pulls aesthetic photos for your niche (Pinterest and Cosmos), you click Like or Nope, and your likes become your image taste. Built-in rules: no stock photos, nothing AI-looking, square corners, and photos don't zoom.
-- Fine-tune the details in the **Shine**, **Zoom**, **Shadow** and **Text** labs and press Lock when it looks right.
-- Pick your sound effects by ear on the Sounds page.
-- Everything you say you like or hate is written down word for word as you go. At the end you pick what's final, and that becomes your plain-English `STYLE.md` plus your locked settings, which /edit-my-video reads.
+- **It starts blank.** No built-in taste: the look, the moves, the corners, how loud the sounds are, all of it comes from you.
+- **A short brief first.** What the style is for, who's watching and what they should feel in the first second, your brand (paste your website and it reads your colours and font, or start from scratch and pick), 3 to 5 videos you love and what you love about each, what you never want to see, how things should move, and whether you want visuals, photos and sound effects at all.
+- **Your references, broken down.** It studies each video frame by frame to learn the timing, motion and pacing. If one moment really stands out, it pulls every frame so you can point at it ("frames 7 to 16") and it rebuilds that exact moment in your brand. Every video you send stays on the Creators tab.
+- **Rounds of real animations, in your colours, on your own face.** Your colours and font sit locked at the top of the page. Mark each option **Keep**, **Maybe** or **Drop**, add a note like "slower" or "bigger", press **Submit review**, then tell Claude "done" and it builds the next round. Each round only shows what's still in play.
+- **Photos, if you want them.** It asks first. If yes, it pulls photos for your niche (Pinterest and Cosmos), you Like or Nope them, and your likes become your image taste.
+- **Sound effects, if you want them.** Your own library, or it finds free ones for you (Openverse, Mixkit), or makes them in code with Earshot. Each one plays on its animation so you pick by ear.
+- Everything you say you like or hate is written down word for word as you go. The result is your plain-English `STYLE.md` (your brief, what's locked, what's rejected) plus your locked settings, which /edit-my-video reads.
 
 **2. /edit-my-video** edits your raw clips in that style.
 
@@ -33,10 +33,10 @@ You don't need to know any code. You paste one line into Claude and it does the 
    ```
 
    Claude will ask your permission to run a few things. Say yes. If a Mac window pops up asking to install "developer tools", click **Install**, wait for it to finish, then paste the line again.
-3. **Start a new chat** (so Claude sees the new skills), type `/build-my-style` and press Enter. Claude takes it from there, one question at a time.
+3. **Start a new chat** (so Claude sees the new skills), type `/stylelab` and press Enter. Claude takes it from there, one question at a time.
 4. When your style is done, type `/edit-my-video` and drop in your clips.
 
-To update later, paste the same line again. Your style and your saved folders stay put.
+To update later, paste the same line again. Your style and your saved folders stay put. (StyleLab used to be called /build-my-style: updating renames it for you.)
 
 ### First run: what Claude will ask you to install
 
@@ -64,8 +64,8 @@ When the user asks you to install (or update) these skills, do exactly this:
 1. Clone the repo into a fresh temporary folder:
    `DIR="$(mktemp -d)" && git clone --depth 1 https://github.com/learnaiwithhugo/video-editor-skills "$DIR/video-editor-skills"`
    (if git isn't installed, a Mac window offers to install the developer tools: tell the user to click Install, wait, and tell you when it's done).
-2. Run `bash "$DIR/video-editor-skills/install.sh"`. It copies `build-my-style`, `edit-my-video`, `kallaway-edit` and `new-edit-style` into `~/.claude/skills/`, moves any older copy to `~/.claude/skills-backup/` instead of deleting it, and carries over each skill's saved folders.
-3. Tell the user, in plain English: the skills are installed, start a new Claude Code session, then type `/build-my-style` to make their style and `/edit-my-video` to edit with it. Mention what they need (below), and that each skill checks it all for them.
+2. Run `bash "$DIR/video-editor-skills/install.sh"`. It copies `stylelab`, `edit-my-video`, `kallaway-edit` and `new-edit-style` into `~/.claude/skills/`, moves any older copy to `~/.claude/skills-backup/` instead of deleting it, and carries over each skill's saved folders.
+3. Tell the user, in plain English: the skills are installed, start a new Claude Code session, then type `/stylelab` to make their style and `/edit-my-video` to edit with it. Mention what they need (below), and that each skill checks it all for them.
 
 Don't change the user's settings or install anything else. Each skill's own setup step handles the tools on first run.
 
@@ -84,7 +84,7 @@ On first run each skill checks your Mac, tells you what's missing in plain Engli
 
 - **"command not found: brew"** in Terminal: run the "Next steps" lines Homebrew printed at the end of its install, then close and reopen Terminal.
 - **The check says NOT READY:** read the line marked MISSING, run the fix it gives, then tell Claude "done" and it checks again.
-- **A page won't load or a button says it failed:** tell Claude. It restarts the little page server for you and gives you a fresh link. Your marks are saved in the browser.
+- **Submit says it can't reach Claude:** open the link Claude gave you (it has to be the claude.ai page, signed in). Your marks are saved in the browser until you submit.
 - **Anything else:** copy the red or confusing text, paste it to Claude and ask what it means.
 
 ## Nothing third-party is bundled
@@ -93,8 +93,8 @@ Your font is downloaded from Fontshare or Google Fonts on your Mac. Sound effect
 
 ## Where things live
 
-- The skills: `~/.claude/skills/` (`build-my-style`, `edit-my-video`, `kallaway-edit`, `new-edit-style`)
-- Your style: the folder you pick (suggested: `~/edit-style`). Inside: `STYLE.md`, your locked settings, sounds, liked and rejected photos (`images/`), your own words (`notes/`) and the creators you learn from
+- The skills: `~/.claude/skills/` (`stylelab`, `edit-my-video`, `kallaway-edit`, `new-edit-style`)
+- Your style: the folder you pick, inside the folder you opened Claude Code in (suggested: `my-style`). Inside: `STYLE.md`, your locked settings, sounds, liked and rejected photos (`images/`), your own words (`notes/`) and the creators you learn from
 - Your edits: the folder you pick on the first /edit-my-video run (one folder per video)
 
 ## Extras: two more skills

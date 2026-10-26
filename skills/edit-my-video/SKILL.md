@@ -1,6 +1,6 @@
 ---
 name: edit-my-video
-description: Edit raw talking-head clips into a finished vertical Instagram reel in the creator's OWN style, read from a style folder made by build-my-style (STYLE.md, locked shine/zoom/shadow, picked sound effects). Picks the last clean take of every line, shows a storyboard page first (a still per beat, A/B/C options on the key beats, Approve/Change and notes), optionally renders short variations of key moments to pick from, then builds the full edit in HyperFrames, reviews its own render, and turns every note the user gives into a dated rule in their STYLE.md so the next edit is better. Free local tools only. Use whenever someone says "/edit-my-video", "edit my video", "edit these clips", "make this into a reel in my style", "storyboard this edit", drops a folder of raw clips and wants an edit, or gives notes on an edit this skill made ("I don't like the zoom", "make the logos bigger").
+description: Edit raw talking-head clips into a finished vertical Instagram reel in the creator's OWN style, read from a style folder made by stylelab (STYLE.md, locked shine/zoom/shadow, picked sound effects). Picks the last clean take of every line, shows a storyboard page first (a still per beat, A/B/C options on the key beats, Approve/Change and notes), optionally renders short variations of key moments to pick from, then builds the full edit in HyperFrames, reviews its own render, and turns every note the user gives into a dated rule in their STYLE.md so the next edit is better. Free local tools only. Use whenever someone says "/edit-my-video", "edit my video", "edit these clips", "make this into a reel in my style", "storyboard this edit", drops a folder of raw clips and wants an edit, or gives notes on an edit this skill made ("I don't like the zoom", "make the logos bigger").
 ---
 
 # /edit-my-video
@@ -10,8 +10,8 @@ short plain messages, one step at a time, do all the technical work yourself, an
 Never use the AskUserQuestion popup (ask in chat). Never post or upload anything anywhere. No em dashes in
 anything you write for them or put on screen.
 
-`SK` = this skill's folder. `STYLE` = the style folder (default: the one saved in `SK/config.json`, else the one /build-my-style
-made, else `~/edit-style`; if none has a STYLE.md, ask where it is or suggest /build-my-style first). `WORK` = one folder per video,
+`SK` = this skill's folder. `STYLE` = the style folder (default: the one saved in `SK/config.json`, else the one /stylelab
+made, else `~/edit-style`; if none has a STYLE.md, ask where it is or suggest /stylelab first). `WORK` = one folder per video,
 `<edits folder>/<slug>/` (slug = short kebab-case, e.g. `github-repos`). Quote every path, they have spaces.
 Scripts run as `python3 "SK/scripts/<name>.py" ...`; each prints its own usage when run with no arguments.
 
@@ -109,8 +109,8 @@ edit already knows:
 `python3 "SK/scripts/feedback.py" "STYLE" --video <slug> --rule "<do this from now on>"` (or `--rejected
 "<never again>"`, `--kept "<loved this>"`). Use their words, one note per flag; a thing they loved is as
 important as a thing they hated. It backs up STYLE.md first and logs it. Say in one line what you added.
-If a note is about a locked value (the shine, a zoom curve, the caption shadow), say it lives in their
-style page's lab and offer to open it rather than overriding the lock silently.
+If a note is about a locked value (the shine, a zoom curve, the caption shadow), say it was locked on
+their StyleLab page and offer a quick fine-tuning round there (/stylelab) rather than overriding the lock silently.
 
 ## Times (M-series Mac, 15 s of finished reel from ~8 min of footage)
 takes ~1 min per 5 min of footage · cut + words ~15 s · storyboard stills ~2 min · variation slice ~6 s each ·

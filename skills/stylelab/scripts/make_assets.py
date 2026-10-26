@@ -8,7 +8,7 @@ Usage:
       When this Mac can, it also makes the head cut-out at the end (see cutout), so nobody has to ask for it.
   python3 -I make_assets.py "<style folder>" cutout
       The person cut out of the face clip, frame for frame, on a see-through background:
-      page/assets/face-cutout.webm (plays in Chrome) and face-cutout.mov (plays in Safari). This is what
+      page/assets/face-cutout.webm (plays in Chrome) and face-cutout-hevc.mp4 (plays in Safari and on iPhones). This is what
       lets words sit BEHIND their head: footage at the back, the words in the middle, this on top.
       Mac only (uses Apple's built-in person detection, free, nothing leaves the Mac). It lines up with
       face-loop.mp4 exactly (same size, speed and length). Runs by itself at the end of "face".
@@ -74,7 +74,7 @@ def face(style, clip, start, seconds):
 
 
 # ---- head cut-out (person on a see-through background) ------------------------------------------------
-CUTOUT_FILES = ["face-cutout.webm", "face-cutout.mov"]
+CUTOUT_FILES = ["face-cutout.webm", "face-cutout-hevc.mp4", "face-cutout.mov"]   # .mov = the old name
 
 
 class Skip(Exception):
@@ -127,7 +127,7 @@ def cutout(style):
         raise SystemExit("There's no face clip yet. Make it first: make_assets.py \"<style folder>\" face \"<their clip>\"")
     ok, why = cutout_tools()
     if not ok:
-        print(f"Can't make the head cut-out on this computer: {why}.\n  Everything else in Style Studio works without it.")
+        print(f"Can't make the head cut-out on this computer: {why}.\n  Everything else in StyleLab works without it.")
         return False
     tmp = Path(tempfile.mkdtemp(prefix="style-cutout-"))
     try:
@@ -177,12 +177,12 @@ def make_cutout(assets, loop, tmp):
               "-metadata:s:v:0", "alpha_mode=1", tmp / "face-cutout.webm"], "Making the Chrome version")
     mov_ok = True
     try:
-        sh(src + ["-c:v", "hevc_videotoolbox", "-alpha_quality", "0.8", "-b:v", "8M", "-tag:v", "hvc1", tmp / "face-cutout.mov"],
+        sh(src + ["-c:v", "hevc_videotoolbox", "-alpha_quality", "0.8", "-b:v", "8M", "-tag:v", "hvc1", "-movflags", "+faststart", tmp / "face-cutout-hevc.mp4"],
            "Making the Safari version")
     except Skip as e:
         mov_ok = False
         print(f"  (Safari version skipped. Chrome is the one used for edits. {str(e).splitlines()[0]})")
-    names = ["face-cutout.webm"] + (["face-cutout.mov"] if mov_ok else [])
+    names = ["face-cutout.webm"] + (["face-cutout-hevc.mp4"] if mov_ok else [])
     # Same size, speed and length as the clip, or it would drift against the person's face.
     for nm in names:
         c = json.loads(sh(["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames", "-show_entries",
@@ -193,7 +193,7 @@ def make_cutout(assets, loop, tmp):
     for nm in names:
         shutil.move(str(tmp / nm), str(assets / nm))
     mb = lambda nm: (assets / nm).stat().st_size / 1e6
-    print(f"saved face-cutout.webm ({mb('face-cutout.webm'):.1f} MB)" + (f" and face-cutout.mov ({mb('face-cutout.mov'):.1f} MB)" if mov_ok else "")
+    print(f"saved face-cutout.webm ({mb('face-cutout.webm'):.1f} MB)" + (f" and face-cutout-hevc.mp4 ({mb('face-cutout-hevc.mp4'):.1f} MB)" if mov_ok else "")
           + f": {w}x{h}, {n} frames at {fps.replace('/1', '')} fps, the same as face-loop.mp4")
 
 

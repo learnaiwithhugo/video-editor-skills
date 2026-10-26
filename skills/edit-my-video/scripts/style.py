@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read a style folder (made by build-my-style) and turn it into tokens the edit engine uses.
+"""Read a style folder (made by stylelab) and turn it into tokens the edit engine uses.
 
 Usage:
   python3 style.py check  [<style_dir>]              is the folder complete? (plain-English report)
@@ -84,7 +84,7 @@ def colours(sd, md):
         if isinstance(c, list):  # [{name, hex, role}]
             c = {x.get("role") or x.get("name"): x.get("hex") for x in c}
         out = dict(FALLBACK)
-        # Exact names first (incl. build-my-style's paper / accent_soft / accent_deep), so "accent_soft"
+        # Exact names first (incl. stylelab's paper / accent_soft / accent_deep), so "accent_soft"
         # can never overwrite the accent; loose prefix matching only fills roles still unset.
         exact = {"bg": ("bg", "background", "base", "paper", "white"), "accent": ("accent", "primary", "brand", "blue"),
                  "wash": ("wash", "soft", "tint", "secondary", "accent_soft", "blue_soft"),
@@ -270,7 +270,7 @@ def check(sd):
         print(("  OK       " if good else "  MISSING  ") + msg + ("" if good else f"\n           -> {fix}"))
         ok = ok and good
     print(f"Style folder: {sd}\n")
-    say((sd / "STYLE.md").exists(), "STYLE.md (the rules)", "Run build-my-style first.")
+    say((sd / "STYLE.md").exists(), "STYLE.md (the rules)", "Run stylelab first.")
     tok = resolve(sd)
     say(bool(tok["colors"]["named"]), f"Colours ({', '.join(tok['colors']['named']) or 'none found'})",
         "Add a '**Colours:**' line to STYLE.md or a locked/brand.json.")
@@ -281,8 +281,8 @@ def check(sd):
         print(("  OK       " if p.exists() else "  default  ") + f"locked/{n}.json" + ("" if p.exists() else " (not locked, using the default)"))
     missing = [s["file"] for s in tok["sfx"] if not Path(s["path"]).exists()]
     say(bool(tok["sfx"]) and not missing, f"Sound effects ({len(tok['sfx'])} picked)",
-        "Pick sounds in build-my-style, or missing files: " + ", ".join(missing))
-    say((sd / "page").is_dir(), "page/ (where the storyboard page goes)", "Run build-my-style to make it.")
+        "Pick sounds in stylelab, or missing files: " + ", ".join(missing))
+    say((sd / "page").is_dir(), "page/ (where the storyboard page goes)", "Run stylelab to make it.")
     print("\nREADY" if ok else "\nNOT READY")
     return ok
 
@@ -310,9 +310,11 @@ def listening(port):
 
 
 def serve(sd):
-    # build-my-style's server.py knows which port THIS style folder's server is on, never mistakes another
+    # stylelab's server.py knows which port THIS style folder's server is on, never mistakes another
     # program on port 4870 for it, and moves to the next free port if 4870 is busy. Use it when it's installed.
-    bms = SK.parent / "build-my-style" / "scripts" / "server.py"
+    bms = SK.parent / "stylelab" / "scripts" / "server.py"
+    if not bms.exists():  # older installs still have it under its old name
+        bms = SK.parent / "build-my-style" / "scripts" / "server.py"
     if bms.exists():
         for cmd in ("status", "start"):
             r = subprocess.run([sys.executable, "-I", str(bms), cmd, str(sd)], capture_output=True, text=True)

@@ -1,24 +1,21 @@
 # The Images round
 
-Real photos on screen are a big part of a good edit, and everyone's taste in them is different. This round
-builds the person's own: they like and drop real photos on the Images page, and what they pick (and why)
-becomes the Images section of their STYLE.md. Tool: `scripts/images.py`. Page: `/images.html`.
+Only when they said yes to real photos in the brief. Everyone's taste in photos is different, so this
+builds theirs from nothing: they Like or Nope real photos on the Images tab of their StyleLab page, and what
+they pick (and why) becomes the Images section of their STYLE.md. Tool: `scripts/images.py`.
 
 ## When
 After round 1 is going (brand, interview and reference breakdowns done). Say it in one line: "Now let's
 find the kind of photos you'd put in your edits. About 10 minutes, mostly clicking."
 
-## The defaults (they are on the page; the person can change any of them)
-1. Images never have rounded corners. Sharp rectangles, no glassy bubble or tile around them.
-2. No stock photos (posed, studio-lit, corporate, the Pexels/Unsplash look).
-3. Nothing AI-looking (plastic, too perfect, render look).
-4. No zooming on images: an image is slapped on screen, sits still, then hard cuts. Zoom only when there is a reason.
-5. Real, candid, good-looking photos with real light. Film and pop-culture stills are great for joke moments.
-   No text burned in, no watermarks, no magazine covers, no Instagram or Xiaohongshu screenshots.
-
-These came from one creator's corrections ("no rounded corners" was the biggest preference he had). The page
-always shows the defaults. When the person reverses one, write the change in STYLE.md (drop or flip the rule
-there) and say so; their likes and dislikes become the real guide.
+## No defaults: ask
+There are no built-in image rules. Corners, borders, zooms on photos, film grain, stock or not: it's all
+theirs to decide. Ask two quick questions before the first search, one at a time:
+- "How should photos sit on screen: sharp square corners, rounded, with a frame or border, or full screen?"
+- "Should a photo move once it's on (a slow zoom, a push in) or sit still?"
+Then make the round's photo options follow their answers (`radius`, entrance and zoom params), and let the
+Like / Nope picks teach the rest. Two things are only quality, so always: skip pictures with watermarks or
+text burned in, and tell them when a picture looks AI-made or like stock, so they decide knowingly.
 
 ## Steps
 1. **Tools.** `python3 -I -c "import requests, PIL"`. If it fails, ask before running `pip3 install requests pillow`.
@@ -38,11 +35,13 @@ there) and say so; their likes and dislikes become the real guide.
    number burned in each picture). Read every sheet yourself. If a query came back mostly stock or AI-looking,
    search again with better words before the person sees it. Don't pre-mark anything for them. Tell them in
    two lines what you noticed ("p3 has text in the picture, p4 looks AI"), they decide.
-5. **Send them to the page.** `server.py start "STYLE" --open`, then give them the address plus `/images.html`.
-   "Open the Images page. Hit Like on photos you'd put in your edit, Nope on ones you wouldn't, and type why on
-   a Nope if you can (it teaches me). Click a photo to see it big. Tell me 'done'." Every click is saved
-   straight away.
-6. **Read what they picked.** `STYLE/images/picks.json` (each mark: slug, id, verdict, reason, file) and
+5. **Send them to the page.** `publish.py "STYLE"` and publish (see `artifact.md`), then: "The photos are on
+   the Images tab of your StyleLab page. Hit Like on photos you'd put in your edit, Nope on ones you wouldn't,
+   and type why on a Nope if you can (it teaches me). Tap a photo to see it big. Press Submit at the bottom,
+   then come back and say done."
+6. **Read what they picked.** `ArtifactData` `list` of `submissions`, save the newest `images` one to a file,
+   `pull_review.py "STYLE" <file>` (it files every pick like the old buttons did). Then
+   `STYLE/images/picks.json` (each mark: slug, id, verdict, reason, file) and
    `images/index.json` ({liked, disliked, recreate}). If they talk instead ("I like the 3rd Pinterest one"), do it
    for them: `images.py pick "STYLE" <slug> like p3 dislike c4:"AI-looking"` (`clear p3` takes a mark back).
    When more than one search is on the page, ask which one in a line. Look at the liked files yourself
@@ -51,8 +50,8 @@ there) and say so; their likes and dislikes become the real guide.
    wide, film grain, candid vs staged)? What do the Nope reasons say? Run 2 to 4 new searches in THEIR words,
    sheet, send. Usually 2 rounds are enough: stop when new likes stop teaching you anything.
 8. **Write the Images section of STYLE.md** in their words, with the exact things they said: what a good photo
-   looks like for them, what they never want (quote the reasons), the rules above as they stand, where photos
-   come from (Pinterest first, Cosmos when a photo goes full screen, because it is sharper). A taste, not a
+   looks like for them, what they never want (quote the reasons), how photos sit and move (their answers above),
+   where photos come from (Pinterest first, Cosmos when a photo goes full screen, because it is sharper). A taste, not a
    shopping list: edits search fresh photos for each video, they don't reuse the same few.
 9. **Hand the keepers to the animations.** `images.py use "STYLE"` (all liked) or with names from
    `images/liked/`. They land in `page/assets/photos/` with a `photos.json`, which the style page's photo
@@ -83,8 +82,8 @@ Tool: python3 -I "[SK]/scripts/images.py" ...   (SK = the skill folder; quote ev
    warm lamp"). Write 2 differently worded searches from that line and run
    python3 -I "[SK]/scripts/images.py" search "[STYLE]" "<q1>" "<q2>" --n 6
    then python3 -I "[SK]/scripts/images.py" sheet "[STYLE]" <slug> for each, and Read the sheets.
-4. Pick the 3 best matches: same subject and mood, real light, candid. Not stock, not AI-looking, no text or
-   watermark, no magazine covers. If fewer than 3 are good, pick fewer and say so.
+4. Pick the 3 best matches: same subject, mood, light and look as the original. No text or watermark. If
+   fewer than 3 are good, pick fewer and say so.
 5. Build the sheet:
    python3 -I "[SK]/scripts/images.py" recreate "[STYLE]" <name> "[A]/photos/<name>.jpg" <slug>:<id> <slug>:<id> <slug>:<id>
    (<slug>:<id> is the search name and the number on the sheet, like late-night-desk:p3). Read the finished
@@ -93,14 +92,14 @@ Tool: python3 -I "[SK]/scripts/images.py" ...   (SK = the skill folder; quote ev
 Reply in under 120 words: one line per photo (name, time in the reel, how good the matches are) and the sheet paths.
 ```
 
-When they are back, tell the person how many photos were found and send them to `/images.html` (the section
-appears once there is a sheet). Matches they like are marked the same way as any candidate, because every match
+When they are back, tell the person how many photos were found and publish so the sheets show on the Images tab
+(the section appears once there is a sheet). Matches they like are marked the same way as any candidate, because every match
 came from a search: `images.py pick "STYLE" <slug> like p3`.
 
 ## If something breaks
 - A source says "didn't answer": wait a minute and run the same search again (it only fetches what is missing).
   If Pinterest stays down, Cosmos alone still works (`--only cosmos`).
-- Clicks on the page don't save ("Couldn't save"): `server.py start "STYLE"` (replaces a stale server), refresh.
-  Their marks are kept in `images/picks.json`.
+- Submit says it can't reach Claude: they're not on the artifact link, or signed out. Send the link again;
+  their marks are kept in the browser until they submit.
 - Re-running `setup.py --init "STYLE"` refreshes the page and server files and keeps everything in `images/`.
 - Nothing is ever deleted: replaced files go to `images/old/`.

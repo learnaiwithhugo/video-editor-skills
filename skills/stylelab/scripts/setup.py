@@ -7,7 +7,10 @@ Usage:
       Report what's installed and what's missing, each with a one-line fix. Installs nothing.
   python3 -I setup.py --init "<style folder>"
       Make (or refresh) the style folder: STYLE.md later, locked/ sfx/ page/ reviews/ references/.
-      Copies the page engine in. Existing choices (round.json, custom.js, assets, locks) are never overwritten.
+      Copies the page engine in (every file in engine/page/, so new page files arrive too). Existing choices
+      (round.json, custom.js, assets, locks) are never overwritten. The page is published as a Claude artifact
+      from this folder, so it should sit inside the folder Claude Code was opened in (suggested: ./my-style);
+      otherwise a plain warning says so.
   python3 -I setup.py --install-hyperframes
       Downloads the pinned HyperFrames video renderer and its headless Chrome through npx (~150 MB).
       Only run this after the person agreed. Nothing goes into ~/.claude/skills.
@@ -28,8 +31,9 @@ CONFIG = SK / "config.json"
 PIN = "0.8.185"   # same HyperFrames version the editing skills use
 ENV = dict(os.environ, HYPERFRAMES_SKIP_SKILLS="1", HYPERFRAMES_NO_TELEMETRY="1")
 ok = True
-# Engine files that get refreshed on --init. Everything else in page/ belongs to the person.
-ENGINE_FILES = ["library.js", "app.js", "boot.js", "style.css", "index.html", "shine.html", "zoom.html", "shadow.html", "text.html", "sfx.html", "images.html", "creators.html"]
+# Everything in engine/page/ is refreshed on --init, EXCEPT custom.js (the person's own animations, copied only when
+# missing). Everything else in the style folder's page/ (round.json, assets/, ...) belongs to the person.
+KEEP_MINE = {"custom.js"}
 
 
 def say(good, msg, fix="", optional=False):
@@ -69,7 +73,7 @@ def config(**changes):
 
 
 def check():
-    print("Checking your Mac for the free tools Style Studio needs:\n")
+    print("Checking your Mac for the free tools StyleLab needs:\n")
     say(platform.system() == "Darwin", "macOS", "This skill is built for a Mac.")
     say(bool(shutil.which("ffmpeg")) and bool(shutil.which("ffprobe")), "ffmpeg (cuts clips, makes previews)",
         "install Homebrew from https://brew.sh, then in Terminal: brew install ffmpeg")
@@ -98,17 +102,44 @@ def check():
     return 0 if ok else 1
 
 
+def outside_cwd_warning(style):
+    """The Artifact tool only publishes files from the folder Claude Code was opened in."""
+    cwd = Path.cwd().resolve()
+    try:
+        Path(style).resolve().relative_to(cwd)
+        return ""
+    except ValueError:
+        return (f"HEADS UP: {style} is not inside the folder Claude Code was opened in ({cwd}). The style page is published "
+                f"as a Claude artifact from this folder, and the Artifact tool can only publish files from the folder Claude Code "
+                f"was opened in. Use a folder inside it (suggested: ./my-style), or open Claude Code in {Path(style).parent}.")
+
+
+def copy_engine_page(dest):
+    """Refresh every engine page file (not custom.js, the person's own) and report which ones were copied."""
+    copied = []
+    for src in sorted((ENGINE / "page").iterdir()):
+        if src.name.startswith(".") or src.name in KEEP_MINE:
+            continue
+        if src.is_dir():
+            shutil.copytree(src, dest / src.name, dirs_exist_ok=True)
+        else:
+            shutil.copy2(src, dest / src.name)
+        copied.append(src.name)
+    return copied
+
+
 def init(style):
     style = Path(os.path.expanduser(style)).resolve()
     made = not style.exists()
     for sub in ["locked/old", "sfx/old", "reviews", "references/analysis", "page/assets/icons", "page/assets/photos", "page/rounds",
                 "images/liked", "images/disliked", "notes"]:
         (style / sub).mkdir(parents=True, exist_ok=True)
-    for f in ENGINE_FILES:   # refresh the engine, keep the person's own files
-        shutil.copy2(ENGINE / "page" / f, style / "page" / f)
+    copy_engine_page(style / "page")   # refresh the engine, keep the person's own files
     if not (style / "page" / "custom.js").exists():
         shutil.copy2(ENGINE / "page" / "custom.js", style / "page" / "custom.js")
     shutil.copy2(ENGINE / "serve.py", style / "serve.py")
+    # serve.py records Like / Nope clicks with the same function the scripts use: keep a copy beside it.
+    shutil.copy2(Path(__file__).resolve().parent / "images.py", style / "images_lib.py")
     if not (style / "sfx" / "sfx.json").exists():
         (style / "sfx" / "sfx.json").write_text("[]\n")
     words = style / "notes" / "their-words.md"
@@ -117,10 +148,14 @@ def init(style):
     config(styleDir=str(style))
     print(f"{'Made' if made else 'Refreshed'} your style folder: {style}")
     for sub, what in [("STYLE.md", "your style guide (written as we go)"), ("locked/", "settings you lock"),
-                      ("sfx/", "your sound effects"), ("page/", "the style page"), ("reviews/", "your Keep / Maybe / Drop marks"),
+                      ("sfx/", "your sound effects"), ("page/", "the style page (published as your Claude artifact)"),
+                      ("reviews/", "your Keep / Maybe / Drop marks"),
                       ("references/", "videos you love and what we learned from them"),
                       ("images/", "photos you like and don't (your image taste)"), ("notes/", "what you've told me, word for word")]:
         print(f"  {sub:13} {what}")
+    warn = outside_cwd_warning(style)
+    if warn:
+        print("\n" + warn)
 
 
 def install_hyperframes():

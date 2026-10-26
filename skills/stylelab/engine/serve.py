@@ -19,17 +19,18 @@ Things that can be saved from the browser:
                             (or reviews/latest-<kind>.json for anything that isn't a style round)
   POST /api/lock/<name>  -> locked/<name>.json, the previous one moved to locked/old/
   POST /api/images       -> {slug, id, verdict: "like"|"dislike"|null, reason?}: the Images page's buttons.
-                            Does exactly what `images.py pick` does (files in images/liked and images/disliked,
-                            marks in images/picks.json, list in images/index.json). Keep the two in step.
+                            Calls pick_image() in scripts/images.py (a copy sits next to this file as images_lib.py),
+                            the same function `images.py pick` and `pull_review.py` use (files in images/liked and
+                            images/disliked, marks in images/picks.json, list in images/index.json).
 GET /api/has?f=assets/<file> says whether an optional page file exists yet.
 GET /api/ping answers with this folder's path, so Claude can tell a stale server from the right one.
 """
+import importlib.util
 import json
 import os
 import re
 import shutil
 import sys
-import threading
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -51,7 +52,24 @@ EMPTY = {
 }
 LOCKABLE = {"shine", "zoom", "shadow", "brand", "text_fade"}
 IMAGES = Path(ROOT) / "images"
-IMAGES_LOCK = threading.Lock()
+
+
+_LIB = []
+
+
+def load_images_lib():
+    """The shared Like / Nope code (scripts/images.py), loaded once. In a style folder `setup.py --init` keeps a copy
+    next to this file as images_lib.py; run from the skill's own engine/ folder it finds scripts/images.py instead."""
+    if not _LIB:
+        mod = None
+        for path in (os.path.join(ROOT, "images_lib.py"), os.path.join(ROOT, "..", "scripts", "images.py")):
+            if os.path.isfile(path):
+                spec = importlib.util.spec_from_file_location("stylelab_images", path)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                break
+        _LIB.append(mod)
+    return _LIB[0]
 
 
 class Slice:
@@ -190,88 +208,16 @@ class Handler(SimpleHTTPRequestHandler):
             print(f"{datetime.now():%H:%M:%S} {self.path} -> {args[1] if len(args) > 1 else ''}", flush=True)
 
 
-# ---- the Images page's Like / Nope buttons (mirrors scripts/images.py: pick + index) ----
-def img_slug(text, limit=60):
-    return re.sub(r"[^a-z0-9]+", "-", str(text).lower()).strip("-")[:limit].strip("-")
-
-
-def img_archive(path):
-    """Replaced files go to images/old/, never away."""
-    old = IMAGES / "old"
-    old.mkdir(exist_ok=True)
-    stamp, n = datetime.now().strftime("%Y-%m-%d-%H%M%S"), 1
-    dest = old / f"{path.stem}-{stamp}{path.suffix}"
-    while dest.exists():
-        n += 1
-        dest = old / f"{path.stem}-{stamp}-{n}{path.suffix}"
-    shutil.move(str(path), str(dest))
-
-
-def img_json(path, default):
-    try:
-        return json.loads(path.read_text())
-    except (OSError, ValueError):
-        return default
-
-
-def img_index():
-    picks = {p["file"]: p for p in img_json(IMAGES / "picks.json", {"picks": []}).get("picks", [])}
-    out = {"liked": [], "disliked": [], "recreate": []}
-    for folder in ("liked", "disliked"):
-        files = sorted((IMAGES / folder).glob("*")) if (IMAGES / folder).is_dir() else []
-        for f in files:
-            if f.suffix.lower() not in {".jpg", ".jpeg", ".png", ".webp"}:
-                continue
-            rel = f"{folder}/{f.name}"
-            p = picks.get(rel)
-            m = re.fullmatch(r"(.+)-([pc]\d+)(?:-(.+))?", f.stem)
-            item = {"file": rel, "slug": p["slug"] if p else (m.group(1) if m else None),
-                    "id": p["id"] if p else (m.group(2) if m else None)}
-            if p:
-                reason = p.get("reason", "")
-            else:
-                reason = (m.group(3) or "").replace("-", " ") if m else ""
-            if folder == "disliked" or reason:
-                item["reason"] = reason
-            out[folder].append(item)
-    rec = IMAGES / "recreate"
-    for f in sorted(rec.glob("sheet-*.jpg")) if rec.is_dir() else []:
-        out["recreate"].append({"name": f.stem[len("sheet-"):].replace("-", " "), "file": f"recreate/{f.name}"})
-    (IMAGES / "index.json").write_text(json.dumps(out, indent=2, ensure_ascii=False))
-    return out
-
-
+# ---- the Images page's Like / Nope buttons: the logic lives in scripts/images.py (pick_image), shared with
+# pull_review.py (a submitted Images review) and `images.py pick`, so the three can't drift apart.
 def image_pick(data):
-    slug, verdict = str(data.get("slug", "")), data.get("verdict")
-    m = re.fullmatch(r"([pc])0*(\d{1,3})", str(data.get("id", "")).strip().lower())
-    if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", slug) or not m or verdict not in ("like", "dislike", None):
-        return {"error": "bad request"}, 400
-    cid = f"{m.group(1)}{int(m.group(2))}"
-    src = IMAGES / "candidates" / slug / f"{m.group(1)}{int(m.group(2)):02d}.jpg"
-    if not src.is_file():
-        return {"error": f"no picture {cid} in {slug}"}, 404
-    reason = str(data.get("reason") or "").strip()[:200]
-    with IMAGES_LOCK:
-        picks = img_json(IMAGES / "picks.json", {"picks": []})
-        mine = [p for p in picks["picks"] if p["slug"] == slug and p["id"] == cid]
-        for p in mine:
-            if p.get("file") and (IMAGES / p["file"]).is_file():
-                img_archive(IMAGES / p["file"])
-        picks["picks"] = [p for p in picks["picks"] if p not in mine]
-        if verdict:
-            folder = "liked" if verdict == "like" else "disliked"
-            rs = img_slug(reason, 40) if verdict == "dislike" else ""
-            name = f"{slug}-{cid}" + (f"-{rs}" if rs else "") + ".jpg"
-            dest = IMAGES / folder / name
-            dest.parent.mkdir(exist_ok=True)
-            if dest.exists():
-                img_archive(dest)
-            shutil.copy2(src, dest)
-            picks["picks"].append({"slug": slug, "id": cid, "verdict": verdict, "reason": reason,
-                                   "file": f"{folder}/{name}", "at": datetime.now().isoformat(timespec="seconds")})
-        (IMAGES / "picks.json").write_text(json.dumps(picks, indent=2, ensure_ascii=False))
-        idx = img_index()
-    return {"saved": True, "verdict": verdict, "liked": len(idx["liked"]), "disliked": len(idx["disliked"])}, 200
+    lib = load_images_lib()
+    if lib is None:
+        return {"error": "images_lib.py is missing next to serve.py. Ask Claude to run setup.py --init on this folder."}, 500
+    try:
+        return lib.pick_image(IMAGES, data.get("slug"), data.get("id"), data.get("verdict"), data.get("reason")), 200
+    except lib.PickError as e:
+        return {"error": str(e)}, e.code
 
 
 if __name__ == "__main__":
