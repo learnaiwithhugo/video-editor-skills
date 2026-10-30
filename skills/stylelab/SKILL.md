@@ -31,7 +31,8 @@ see `references/artifact.md`) · `images/` · `profile.json` (optional) · `crea
   comes from their brief and their rounds. The first version of this skill came with its builder's taste
   baked in ("ground rules", image rules, a fixed round 1) and new people were shown his style instead of
   finding their own. The only fixed rules: text inside the safe zone, real logos and screenshots, and copy
-  what references DO rather than what they show (STYLE.md template).
+  what references DO rather than what they show (STYLE.md template). The one starting list is the slop
+  menu (`references/slop-menu.md`), an offer they pick from themselves.
 - **Ask, don't add.** Visuals, photos, sound effects, text behind the head, their Instagram: offer each once,
   in plain words, and leave it out if they say no. Never push a section they didn't ask for.
 - **Guardrails, not a menu.** STYLE.md fixes the look, not what gets made. An edit built only from the
@@ -87,7 +88,7 @@ Say: "Welcome to StyleLab! First I'll check your Mac has the free tools (about a
 ### 2. The brief, one question at a time (~10 min). Read `references/interview.md` first.
 Their Instagram (optional), what it's for and why they edit, where and what shape, who's watching and the
 first second, their brand (website or from scratch, colours, font), 3-5 references and what they love in
-each, what they never want, how things should move, whether they want visuals on screen (screenshots,
+each, the slop menu then what they never want (`references/slop-menu.md`), how things should move, whether they want visuals on screen (screenshots,
 logos, diagrams, photos), sound effects (theirs, or offer to get them) and how they should feel, what to
 build first, and a 5-10 s clip of their face. Write it into STYLE.md "The brief", read it back in five
 lines, wait for their OK. Then, only for what they said yes to:
@@ -120,7 +121,8 @@ changes. After "done": pull the review, `brand.py "STYLE" --font "<pick>"`, `mak
 ### 5. Round 1 and every round after. Read `references/rounds.md` and `references/library.md`.
 Build round 1 from the brief only: `make_round.py "STYLE" first --sections "<what they want first>" ...`,
 three to six options per section, one change per option, shaped by their answers and the breakdown
-(`set` to tweak params, your own designs in `page/custom.js` with `add`). Their colours and font sit
+(`set` to tweak params, your own designs in `page/custom.js` with `add`). Never build an option that breaks
+a "Slop we cut" rule: `remove` any catalogue option that does. Their colours and font sit
 locked at the top of the page. Check it locally, publish, send the link:
 "Round 1 is up: <link>. Every one is a real animation in your colours: tap to see it big. Mark Keep, Maybe
 or Drop and leave a note on anything close ('slower', 'bigger'). Press Submit review at the bottom, then
@@ -177,5 +179,5 @@ Pinterest/Cosmos, picks, the liked set) · make_round.py (rounds, locks) · sfx.
 Openverse, Mixkit, Earshot) · style_md.py (STYLE.md auto blocks).
 `engine/`: the page (copied into each style folder's `page/`) and first-round.json (the catalogue round 1
 picks from). `templates/STYLE.md`.
-`references/`: artifact.md, interview.md, breakdown-brief.md, rounds.md, library.md, images.md,
-copy-exact.md, sound.md.
+`references/`: artifact.md, interview.md, slop-menu.md, breakdown-brief.md, rounds.md, library.md,
+images.md, copy-exact.md, sound.md.

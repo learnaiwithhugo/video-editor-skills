@@ -27,7 +27,7 @@ _Filled in from the interview, then read back to them and confirmed._
 - **Where it lives and the shape:**
 - **Who's watching, and what they should feel in the first second:**
 - **References and what they love in each:**
-- **Never:**
+- **Never (the slop menu, then anything else):**
 - **What it uses (colours, font, logo, name):**
 - **How things move:**
 - **Visuals and photos on screen:**
@@ -71,6 +71,11 @@ For the editor: each kept option, its code in `page/library.js` (or `page/custom
 
 <!-- auto:kept -->
 <!-- /auto:kept -->
+
+## Slop we cut
+
+_From the slop menu in the brief (`references/slop-menu.md`): each one they picked to get rid of, as a rule,
+plus any they added. Every edit follows these. Ones they didn't pick are not here on purpose._
 
 ## Rejected
 

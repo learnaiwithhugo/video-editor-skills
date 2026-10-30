@@ -9,6 +9,8 @@ How the page and the database work: `artifact.md`. Read it once per chat.
   don't fit their brief, and `add` variations that do). Three to six options per section, and change ONE thing per
   option (speed, entrance, size, colour, position) so the comparison is fair. Same words and footage across
   a section. If they said "show me" on movement, give each feel (snappy, smooth, bouncy, filmic) one option.
+- Nothing on the page breaks a "Slop we cut" rule in STYLE.md (`slop-menu.md`). `remove` catalogue options
+  that do; don't bring one back unless they drop that rule.
 - Give each section a one-line job: `make_round.py "STYLE" section-note "<Section>" "<what it's for>"`.
 - Say what changed since last round in one line each: `make_round.py "STYLE" round-notes "..." "..."`.
 - Locked sections stay on the page as kept cards, so the whole style is in one place.

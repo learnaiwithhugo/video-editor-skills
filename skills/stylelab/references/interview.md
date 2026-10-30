@@ -46,8 +46,9 @@ what you love about it, even just 'clean text' or 'the way logos come in'." Ask 
 "What's the moment in this one you'd steal?" Their reasons go into each breakdown agent's brief, and every
 reference ends up on the Creators tab (SKILL.md step 3).
 
-**7. Never.** "What do you never want to see in your edits?" Write the answer straight into STYLE.md's
-Rejected list as their own words.
+**7. Never.** First offer the slop menu exactly as `slop-menu.md` says (they pick which to get rid of, each
+pick becomes a rule in STYLE.md "Slop we cut"). Then: "Anything else you never want to see in your
+edits?" Write that answer straight into STYLE.md's Rejected list as their own words.
 
 **8. How should things move?** "How should things move: snappy, smooth, bouncy, filmic, physical, glitchy,
 or 'show me'?" "Show me" = round 1 holds one option of each feel for the same moment.
