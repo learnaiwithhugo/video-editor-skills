@@ -64,7 +64,7 @@ When the user asks you to install (or update) these skills, do exactly this:
 1. Clone the repo into a fresh temporary folder:
    `DIR="$(mktemp -d)" && git clone --depth 1 https://github.com/learnaiwithhugo/video-editor-skills "$DIR/video-editor-skills"`
    (if git isn't installed, a Mac window offers to install the developer tools: tell the user to click Install, wait, and tell you when it's done).
-2. Run `bash "$DIR/video-editor-skills/install.sh"`. It copies `stylelab`, `edit-my-video`, `kallaway-edit` and `new-edit-style` into `~/.claude/skills/`, moves any older copy to `~/.claude/skills-backup/` instead of deleting it, and carries over each skill's saved folders.
+2. Run `bash "$DIR/video-editor-skills/install.sh"`, or, when the user asked for only some of the skills, name them: `bash "$DIR/video-editor-skills/install.sh" stylelab edit-my-video`. It copies those skills (all four by default: `stylelab`, `edit-my-video`, `kallaway-edit`, `new-edit-style`) into `~/.claude/skills/`, moves any older copy to `~/.claude/skills-backup/` instead of deleting it, and carries over each skill's saved folders.
 3. Tell the user, in plain English: the skills are installed, start a new Claude Code session, then type `/stylelab` to make their style and `/edit-my-video` to edit with it. Mention what they need (below), and that each skill checks it all for them.
 
 Don't change the user's settings or install anything else. Each skill's own setup step handles the tools on first run.

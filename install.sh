@@ -1,5 +1,6 @@
 #!/bin/bash
-# Installs (or updates) the four video editing skills into Claude Code's global skills folder.
+# Installs (or updates) the video editing skills into Claude Code's global skills folder: all four, or only
+# the ones named (bash install.sh stylelab edit-my-video).
 # Safe to run again: an older copy is moved to a backup folder, never deleted. Where you saved your
 # style and your edits (each skill's config.json) is carried over to the new copy. Your style folder,
 # your videos, and ~/.claude-video-editor (the older skills' settings and sounds) are never touched.
@@ -9,6 +10,11 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 SKILLS="$HOME/.claude/skills"
 STAMP="$(date +%Y-%m-%d-%H%M%S)"
 BACKUP="$HOME/.claude/skills-backup/$STAMP"
+ALL="stylelab edit-my-video kallaway-edit new-edit-style"
+PICK="${*:-$ALL}"
+for skill in $PICK; do
+  [ -d "$HERE/skills/$skill" ] || { echo "No skill called $skill. Pick from: $ALL"; exit 1; }
+done
 
 mkdir -p "$SKILLS"
 # stylelab used to be called build-my-style. Retire the old copy (to the backup, never deleted) and
@@ -22,7 +28,7 @@ if [ -e "$SKILLS/build-my-style" ]; then
     cp "$BACKUP/build-my-style/config.json" "$BACKUP/stylelab/config.json"
   fi
 fi
-for skill in stylelab edit-my-video kallaway-edit new-edit-style; do
+for skill in $PICK; do
   if [ -e "$SKILLS/$skill" ]; then
     mkdir -p "$BACKUP"
     mv "$SKILLS/$skill" "$BACKUP/$skill"
